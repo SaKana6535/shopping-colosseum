@@ -48,6 +48,12 @@ export default function Home() {
     }
   };
 
+  const handleReset = () => {
+    setSessionId(null);
+    setTurns([]);
+    setError(null);
+  };
+
   const currentScore = turns.length > 0 ? turns[turns.length - 1].judge.score : 50;
 
   return (
@@ -63,10 +69,13 @@ export default function Home() {
           </p>
         </div>
 
-        {/* 商品入力フォーム */}
-        {!sessionId && (
-          <ProductInput onSubmit={handleStartDebate} isLoading={isLoading} />
-        )}
+        {/* 商品入力フォーム（常に表示） */}
+        <ProductInput
+          onSubmit={handleStartDebate}
+          isLoading={isLoading}
+          isDebating={!!sessionId}
+          onReset={handleReset}
+        />
 
         {/* エラー表示 */}
         {error && (
