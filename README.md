@@ -17,12 +17,14 @@ shopping-colosseum/
 ## 技術スタック
 
 ### Frontend
+
 - **Framework:** Next.js 14 (App Router)
 - **Language:** TypeScript
 - **Styling:** Tailwind CSS
 - **State Management:** React Hooks + SWR
 
 ### Backend
+
 - **Framework:** FastAPI
 - **Language:** Python 3.11+
 - **Data Models:** Pydantic
@@ -31,6 +33,7 @@ shopping-colosseum/
 ## セットアップ方法
 
 ### 必要な環境
+
 - Node.js 18.x以上
 - Python 3.11以上
 - npm または yarn
@@ -80,6 +83,7 @@ uvicorn app.main:app --reload --port 8000
 ```
 
 アクセス:
+
 - API: http://localhost:8000
 - APIドキュメント: http://localhost:8000/docs
 
@@ -91,6 +95,7 @@ npm run dev
 ```
 
 アクセス:
+
 - アプリケーション: http://localhost:3000
 
 ## 使い方
@@ -105,6 +110,7 @@ npm run dev
 ## 機能
 
 ### 実装済み
+
 - ✅ 商品情報の入力
 - ✅ 3人のAIエージェントによる議論（モックデータ）
 - ✅ AI審判による購入推奨度の判定
@@ -113,6 +119,7 @@ npm run dev
 - ✅ ダークモード対応
 
 ### 今後の実装予定
+
 - [ ] 実際のGemini API連携
 - [ ] Google検索Grounding機能
 - [ ] Firestoreへの議論ログ保存
@@ -123,6 +130,7 @@ npm run dev
 ## プロジェクト詳細
 
 詳細な設計については以下を参照してください:
+
 - [設計書](docs/document.md)
 - [Backendドキュメント](backend/README.md)
 - [Frontendドキュメント](frontend/README.md)
@@ -130,3 +138,7 @@ npm run dev
 ## ライセンス
 
 このプロジェクトは個人開発プロジェクトです。
+
+## Todo
+
+-[　] 3ターン+
