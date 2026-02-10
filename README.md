@@ -111,19 +111,39 @@ npm run dev
 - ✅ ユーザーによる議論への介入
 - ✅ レスポンシブデザイン
 - ✅ ダークモード対応
+- ✅ Google検索Grounding機能
+- ✅ 実際のGemini API連携
+- ✅ Docker化
+- ✅ Google Cloud Runへのデプロイ
 
 ### 今後の実装予定
-- [ ] 実際のGemini API連携
-- [ ] Google検索Grounding機能
 - [ ] Firestoreへの議論ログ保存
 - [ ] ユーザー認証
-- [ ] Docker化
-- [ ] Google Cloud Runへのデプロイ
+
+## デプロイ
+
+Cloud Run にデプロイ済みです。
+
+```bash
+# mockモードでデプロイ
+gcloud run deploy shopping-colosseum \
+  --project shopping-colosseum \
+  --source . \
+  --region us-central1 \
+  --allow-unauthenticated \
+  --set-env-vars "AI_SERVICE_MODE=mock" \
+  --memory 512Mi \
+  --timeout 300 \
+  --quiet
+```
+
+詳細は [デプロイガイド](docs/deploy.md) を参照してください。
 
 ## プロジェクト詳細
 
 詳細な設計については以下を参照してください:
 - [設計書](docs/document.md)
+- [デプロイガイド](docs/deploy.md)
 - [Backendドキュメント](backend/README.md)
 - [Frontendドキュメント](frontend/README.md)
 
