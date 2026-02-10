@@ -1,0 +1,29 @@
+"""アプリケーション設定 - 環境変数の一元管理"""
+
+import os
+from dotenv import load_dotenv
+
+# .envファイルを読み込む
+load_dotenv()
+
+
+class Settings:
+    """環境変数ベースの設定クラス"""
+
+    # AIサービスモード: "mock" | "gemini"
+    AI_SERVICE_MODE: str = os.getenv("AI_SERVICE_MODE", "mock")
+
+    # Google Cloud設定
+    GOOGLE_CLOUD_PROJECT: str = os.getenv("GOOGLE_CLOUD_PROJECT", "")
+
+    # Vertex AI設定
+    VERTEX_AI_LOCATION: str = os.getenv("VERTEX_AI_LOCATION", "us-central1")
+    VERTEX_AI_MODEL: str = os.getenv("VERTEX_AI_MODEL", "gemini-2.0-flash")
+
+    # アプリケーション設定
+    PORT: int = int(os.getenv("PORT", "8000"))
+    DEBUG: bool = os.getenv("DEBUG", "False").lower() in ("true", "1", "yes")
+
+
+# グローバル設定インスタンス
+settings = Settings()

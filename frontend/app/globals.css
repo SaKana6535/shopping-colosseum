@@ -34,21 +34,26 @@ body {
 
 /* カスタムスタイル */
 .debate-message {
-  @apply rounded-lg p-4 mb-3 shadow-sm;
   animation: slideIn 0.3s ease-out;
 }
 
 @keyframes slideIn {
   from {
     opacity: 0;
-    transform: translateY(10px);
+    transform: translateX(-10px);
   }
   to {
     opacity: 1;
-    transform: translateY(0);
+    transform: translateX(0);
   }
 }
 
 .gauge-bar {
   transition: width 0.5s ease-out, background-color 0.5s ease-out;
+}
+
+/* 2カラムレイアウト */
+.debate-layout {
+  height: calc(100vh - 400px);
+  min-height: 500px;
 }

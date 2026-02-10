@@ -28,45 +28,49 @@ export default function JudgeGauge({ score }: JudgeGaugeProps) {
   };
 
   return (
-    <div className="bg-white dark:bg-slate-800 rounded-xl shadow-lg p-6 mb-6">
+    <div className="bg-gradient-to-br from-white to-slate-50 dark:from-slate-800 dark:to-slate-900 rounded-2xl shadow-xl p-4 mb-6 border border-slate-200 dark:border-slate-700">
       <div className="flex items-center justify-between mb-4">
-        <h2 className="text-xl font-bold text-slate-900 dark:text-white">
-          購入推奨度
-        </h2>
-        <div className={`text-3xl font-bold ${getTextColor(score)}`}>
+        <div>
+          <h2 className="text-xl font-bold text-slate-900 dark:text-white mb-1">
+            購入推奨度
+          </h2>
+          <p className="text-sm text-slate-500 dark:text-slate-400">
+            AI審判による総合評価
+          </p>
+        </div>
+        <div className={`text-3xl font-black ${getTextColor(score)}`}>
           {score}%
         </div>
       </div>
 
       {/* ゲージバー */}
-      <div className="relative">
+      <div className="relative mb-4">
         {/* 背景バー */}
-        <div className="w-full h-8 bg-slate-200 dark:bg-slate-700 rounded-full overflow-hidden">
+        <div className="w-full h-8 bg-slate-200 dark:bg-slate-700 rounded-full overflow-hidden shadow-inner">
           {/* 進捗バー */}
           <div
-            className={`gauge-bar h-full ${getColor(score)} rounded-full`}
+            className={`gauge-bar h-full ${getColor(score)} rounded-full shadow-lg relative overflow-hidden`}
             style={{ width: `${score}%` }}
-          ></div>
+          >
+            <div className="absolute inset-0 bg-white/20 animate-pulse"></div>
+          </div>
         </div>
 
         {/* 中立点マーカー（50%） */}
-        <div 
-          className="absolute top-0 bottom-0 w-0.5 bg-slate-400 dark:bg-slate-500"
-          style={{ left: '50%' }}
-        >
-          <div className="absolute -top-6 left-1/2 -translate-x-1/2 text-xs text-slate-500 dark:text-slate-400">
+        <div className="absolute top-0 bottom-0 w-1 bg-slate-400 dark:bg-slate-500 left-1/2 transform -translate-x-1/2">
+          <div className="absolute -top-8 left-1/2 -translate-x-1/2 text-sm font-semibold text-slate-600 dark:text-slate-400 bg-white dark:bg-slate-800 px-2 py-1 rounded shadow">
             中立
           </div>
         </div>
       </div>
 
       {/* ラベル */}
-      <div className="flex justify-between mt-2 text-xs text-slate-500 dark:text-slate-400">
-        <span>0% (買うな)</span>
-        <span className={`font-semibold ${getTextColor(score)}`}>
+      <div className="flex justify-between items-center text-sm">
+        <span className="text-red-600 dark:text-red-400 font-medium">0% 非推奨</span>
+        <span className={`font-bold text-base ${getTextColor(score)} bg-white dark:bg-slate-800 px-4 py-1 rounded-full shadow`}>
           {getLabel(score)}
         </span>
-        <span>100% (買え)</span>
+        <span className="text-green-600 dark:text-green-400 font-medium">100% 推奨</span>
       </div>
     </div>
   );

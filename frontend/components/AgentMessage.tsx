@@ -1,61 +1,46 @@
 'use client';
 
 import { AgentMessage as AgentMessageType } from '@/types/debate';
+import { getAgentConfig } from '@/lib/agentConfigs';
 
 interface AgentMessageProps {
   message: AgentMessageType;
   index: number;
 }
 
-const agentConfig = {
-  logical: {
-    bgColor: 'bg-blue-50 dark:bg-blue-900/20',
-    borderColor: 'border-blue-200 dark:border-blue-800',
-    iconColor: 'text-blue-600 dark:text-blue-400',
-    icon: '🧠',
-  },
-  emotional: {
-    bgColor: 'bg-pink-50 dark:bg-pink-900/20',
-    borderColor: 'border-pink-200 dark:border-pink-800',
-    iconColor: 'text-pink-600 dark:text-pink-400',
-    icon: '❤️',
-  },
-  critical: {
-    bgColor: 'bg-amber-50 dark:bg-amber-900/20',
-    borderColor: 'border-amber-200 dark:border-amber-800',
-    iconColor: 'text-amber-600 dark:text-amber-400',
-    icon: '⚠️',
-  },
-};
-
 export default function AgentMessage({ message, index }: AgentMessageProps) {
-  const config = agentConfig[message.role];
+  const config = getAgentConfig(message.role);
 
   return (
-    <div 
-      className={`debate-message border ${config.bgColor} ${config.borderColor}`}
-      style={{ animationDelay: `${index * 0.1}s` }}
-    >
-      <div className="flex items-start gap-3">
-        <div className="text-2xl flex-shrink-0">
-          {config.icon}
+    <div className="flex gap-3 mb-4 debate-message animate-slideIn">
+      {/* アバター */}
+      <div className={`flex-shrink-0 w-11 h-11 rounded-full ${config.bgColor} flex items-center justify-center text-xl shadow-md`}>
+        {config.icon}
+      </div>
+      
+      {/* メッセージ本体 */}
+      <div className="flex-1 min-w-0">
+        {/* 名前 */}
+        <div className="flex items-center gap-2 mb-1.5">
+          <span className="font-bold text-sm text-slate-700 dark:text-slate-300">
+            {message.agent_name}
+          </span>
+          <span className="text-xs text-slate-400 dark:text-slate-500">
+            {config.label}
+          </span>
         </div>
-        <div className="flex-1">
-          <div className="flex items-center gap-2 mb-2">
-            <h3 className={`font-bold ${config.iconColor}`}>
-              {message.agent_name}
-            </h3>
-            <span className="text-xs text-slate-500 dark:text-slate-400">
-              {message.role === 'logical' && '論理派'}
-              {message.role === 'emotional' && '感情派'}
-              {message.role === 'critical' && '慎重派'}
-            </span>
+        
+        {/* 吹き出し風メッセージ */}
+        <div className="relative">
+          <div className="absolute -left-2 top-3 w-0 h-0 border-t-8 border-t-transparent border-b-8 border-b-transparent border-r-8 border-r-white dark:border-r-slate-700"></div>
+          <div className="bg-white dark:bg-slate-700 rounded-2xl rounded-tl-sm px-4 py-3 shadow-sm border border-slate-100 dark:border-slate-600">
+            <p className="text-slate-800 dark:text-slate-200 leading-relaxed text-sm">
+              {message.content}
+            </p>
           </div>
-          <p className="text-slate-700 dark:text-slate-300 leading-relaxed">
-            {message.content}
-          </p>
         </div>
       </div>
     </div>
   );
 }
+
