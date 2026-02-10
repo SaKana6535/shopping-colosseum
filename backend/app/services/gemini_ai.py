@@ -162,6 +162,7 @@ class GeminiAIService(AIServiceBase):
         turn_id: int,
         product_url: str,
         user_query: str,
+        selected_agents: Optional[List[str]] = None,
         user_intervention: Optional[str] = None,
         history: Optional[List[dict]] = None,
     ) -> DebateTurn:
