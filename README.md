@@ -115,9 +115,9 @@ npm run dev
 - ✅ 実際のGemini API連携
 - ✅ Docker化
 - ✅ Google Cloud Runへのデプロイ
+- ✅ Firestoreへの議論ログ保存
 
 ### 今後の実装予定
-- [ ] Firestoreへの議論ログ保存
 - [ ] ユーザー認証
 
 ## デプロイ

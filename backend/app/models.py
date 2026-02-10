@@ -1,5 +1,6 @@
 from pydantic import BaseModel
 from typing import List, Literal, Optional
+from datetime import datetime
 
 
 class AgentMessage(BaseModel):
@@ -43,3 +44,33 @@ class NextTurnRequest(BaseModel):
 class NextTurnResponse(BaseModel):
     """次ターンレスポンス"""
     turn: DebateTurn
+
+
+# --- 議論ログ関連モデル ---
+
+
+class DebateLogSummary(BaseModel):
+    """議論ログの概要（一覧用）"""
+    session_id: str
+    product_url: str
+    user_query: str
+    current_turn: int
+    created_at: Optional[datetime] = None
+    updated_at: Optional[datetime] = None
+
+
+class DebateLogDetail(BaseModel):
+    """議論ログの詳細"""
+    session_id: str
+    product_url: str
+    user_query: str
+    current_turn: int
+    history: List[DebateTurn]
+    created_at: Optional[datetime] = None
+    updated_at: Optional[datetime] = None
+
+
+class DebateLogListResponse(BaseModel):
+    """議論ログ一覧レスポンス"""
+    logs: List[DebateLogSummary]
+    count: int

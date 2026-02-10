@@ -31,6 +31,10 @@ class Settings:
         if origin.strip()
     ]
 
+    # Firestore設定
+    FIRESTORE_ENABLED: bool = os.getenv("FIRESTORE_ENABLED", "False").lower() in ("true", "1", "yes")
+    FIRESTORE_COLLECTION: str = os.getenv("FIRESTORE_COLLECTION", "debates")
+
     # 静的ファイル配信設定
     STATIC_FILES_DIR: str = os.getenv("STATIC_FILES_DIR", "")
 
