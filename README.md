@@ -117,11 +117,10 @@ npm run dev
 - ✅ ユーザーによる議論への介入
 - ✅ レスポンシブデザイン
 - ✅ ダークモード対応
+- ✅ 実際のGemini API連携
+- ✅ Google検索Grounding機能
 
 ### 今後の実装予定
-
-- [ ] 実際のGemini API連携
-- [ ] Google検索Grounding機能
 - [ ] Firestoreへの議論ログ保存
 - [ ] ユーザー認証
 - [ ] Docker化
@@ -138,9 +137,3 @@ npm run dev
 ## ライセンス
 
 このプロジェクトは個人開発プロジェクトです。
-
-## Todo
-
-- [ ] 3ターン+: なかじま
-- [ ] 実際のGemini API連携(モックデータも残す): こかど
-- [ ] Docker化: こかど
