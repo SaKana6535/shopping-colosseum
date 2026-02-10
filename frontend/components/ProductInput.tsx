@@ -32,23 +32,23 @@ export default function ProductInput({ onSubmit, isLoading, isDebating, onReset 
   // 議論中のコンパクト表示
   if (isDebating && !isExpanded) {
     return (
-      <div className="bg-white dark:bg-slate-800 rounded-xl shadow-lg p-4 mb-6">
+      <div className="bg-gradient-to-br from-white to-slate-50 dark:from-slate-800 dark:to-slate-900 rounded-xl shadow-lg p-4 mb-6 border border-slate-200 dark:border-slate-700">
         <div className="flex items-center justify-between gap-4">
           <div className="flex-1 min-w-0">
             <div className="flex items-center gap-2 text-sm text-slate-600 dark:text-slate-400">
-              <span className="font-medium text-slate-700 dark:text-slate-300 shrink-0">商品:</span>
+              <span className="font-semibold text-slate-700 dark:text-slate-300 shrink-0">商品:</span>
               <span className="truncate">{productUrl}</span>
             </div>
             <div className="flex items-center gap-2 text-sm text-slate-600 dark:text-slate-400 mt-1">
-              <span className="font-medium text-slate-700 dark:text-slate-300 shrink-0">悩み:</span>
+              <span className="font-semibold text-slate-700 dark:text-slate-300 shrink-0">悩み:</span>
               <span className="truncate">{userQuery}</span>
             </div>
           </div>
           <button
             onClick={handleReset}
-            className="shrink-0 bg-slate-600 hover:bg-slate-700 text-white text-sm font-semibold py-2 px-4 rounded-lg transition-colors duration-200"
+            className="shrink-0 bg-gradient-to-br from-slate-600 to-slate-700 hover:from-slate-700 hover:to-slate-800 text-white text-sm font-semibold py-2 px-4 rounded-lg transition-all shadow-md hover:shadow-lg"
           >
-            新しい議論
+            新規作成
           </button>
         </div>
       </div>
@@ -57,8 +57,9 @@ export default function ProductInput({ onSubmit, isLoading, isDebating, onReset 
 
   // フルサイズの入力フォーム
   return (
-    <div className="bg-white dark:bg-slate-800 rounded-xl shadow-lg p-8 mb-8">
-      <h2 className="text-2xl font-bold text-slate-900 dark:text-white mb-6">
+    <div className="bg-gradient-to-br from-white to-slate-50 dark:from-slate-800 dark:to-slate-900 rounded-xl shadow-xl p-8 mb-8 border border-slate-200 dark:border-slate-700">
+      <h2 className="text-2xl font-bold text-slate-900 dark:text-white mb-6 flex items-center gap-3">
+        <span className="text-3xl">🛍️</span>
         議論を開始する
       </h2>
       
@@ -76,7 +77,7 @@ export default function ProductInput({ onSubmit, isLoading, isDebating, onReset 
             value={productUrl}
             onChange={(e) => setProductUrl(e.target.value)}
             placeholder="https://example.com/product"
-            className="w-full px-4 py-3 border border-slate-300 dark:border-slate-600 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent dark:bg-slate-700 dark:text-white"
+            className="w-full px-4 py-3 border border-slate-300 dark:border-slate-600 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent dark:bg-slate-700 dark:text-white"
             required
             disabled={isLoading}
           />
@@ -95,7 +96,7 @@ export default function ProductInput({ onSubmit, isLoading, isDebating, onReset 
             onChange={(e) => setUserQuery(e.target.value)}
             placeholder="この商品を買うべきか悩んでいます。価格は適正でしょうか？"
             rows={4}
-            className="w-full px-4 py-3 border border-slate-300 dark:border-slate-600 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent dark:bg-slate-700 dark:text-white resize-none"
+            className="w-full px-4 py-3 border border-slate-300 dark:border-slate-600 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent dark:bg-slate-700 dark:text-white resize-none"
             required
             disabled={isLoading}
           />
@@ -104,9 +105,9 @@ export default function ProductInput({ onSubmit, isLoading, isDebating, onReset 
         <button
           type="submit"
           disabled={isLoading || !productUrl.trim() || !userQuery.trim()}
-          className="w-full bg-primary-600 hover:bg-primary-700 disabled:bg-slate-400 text-white font-semibold py-3 px-6 rounded-lg transition-colors duration-200 disabled:cursor-not-allowed"
+          className="w-full bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 disabled:from-slate-400 disabled:to-slate-400 text-white font-semibold py-3 px-6 rounded-lg transition-all duration-200 disabled:cursor-not-allowed shadow-lg hover:shadow-xl"
         >
-          {isLoading ? '議論を開始中...' : '議論を開始する'}
+          {isLoading ? '議論を開始中...' : '🎭 議論を開始する'}
         </button>
       </form>
     </div>

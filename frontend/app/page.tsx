@@ -2,7 +2,8 @@
 
 import { useState } from 'react';
 import ProductInput from '@/components/ProductInput';
-import DebateView from '@/components/DebateView';
+import CurrentTurnView from '@/components/CurrentTurnView';
+import TurnHistorySidebar from '@/components/TurnHistorySidebar';
 import JudgeGauge from '@/components/JudgeGauge';
 import InputForm from '@/components/InputForm';
 import { DebateTurn } from '@/types/debate';
@@ -11,6 +12,7 @@ import { startDebate, getNextTurn } from '@/lib/api';
 export default function Home() {
   const [sessionId, setSessionId] = useState<string | null>(null);
   const [turns, setTurns] = useState<DebateTurn[]>([]);
+  const [selectedTurnId, setSelectedTurnId] = useState<number | null>(null);
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
@@ -22,6 +24,7 @@ export default function Home() {
       const response = await startDebate({ product_url: productUrl, user_query: userQuery });
       setSessionId(response.session_id);
       setTurns([response.turn]);
+      setSelectedTurnId(response.turn.turn_id);
     } catch (err) {
       setError(err instanceof Error ? err.message : '議論の開始に失敗しました');
     } finally {
@@ -40,7 +43,9 @@ export default function Home() {
         session_id: sessionId,
         user_intervention: intervention,
       });
-      setTurns([...turns, response.turn]);
+      const newTurns = [...turns, response.turn];
+      setTurns(newTurns);
+      setSelectedTurnId(response.turn.turn_id);
     } catch (err) {
       setError(err instanceof Error ? err.message : '次のターンの取得に失敗しました');
     } finally {
@@ -48,25 +53,53 @@ export default function Home() {
     }
   };
 
+  const handleEndDebate = () => {
+    // 議論終了時の処理（必要に応じてバックエンドに通知）
+    alert('議論が終了しました。最終的な購入推奨度: ' + currentScore + '%');
+    handleReset();
+  };
+
   const handleReset = () => {
     setSessionId(null);
     setTurns([]);
+    setSelectedTurnId(null);
     setError(null);
   };
 
   const currentScore = turns.length > 0 ? turns[turns.length - 1].judge.score : 50;
+  const displayTurn = selectedTurnId 
+    ? turns.find(t => t.turn_id === selectedTurnId) || turns[turns.length - 1]
+    : turns[turns.length - 1];
 
   return (
-    <main className="min-h-screen bg-gradient-to-b from-slate-50 to-slate-100 dark:from-slate-900 dark:to-slate-800">
-      <div className="container mx-auto px-4 py-8 max-w-6xl">
+    <main className="min-h-screen bg-gradient-to-br from-slate-50 via-blue-50/30 to-purple-50/30 dark:from-slate-900 dark:via-slate-900 dark:to-slate-900">
+      <div className="container mx-auto px-4 py-8 max-w-7xl">
         {/* ヘッダー */}
-        <div className="text-center mb-8">
-          <h1 className="text-4xl font-bold text-slate-900 dark:text-white mb-2">
-            Shopping Colosseum
-          </h1>
-          <p className="text-slate-600 dark:text-slate-300">
-            AIエージェントがあなたの買い物を徹底議論
+        <div className="text-center mb-10">
+          <div className="inline-block mb-4">
+            <div className="bg-gradient-to-r from-blue-600 to-purple-600 text-transparent bg-clip-text">
+              <h1 className="text-5xl font-black mb-3 tracking-tight">
+                Shopping Colosseum
+              </h1>
+            </div>
+          </div>
+          <p className="text-lg text-slate-600 dark:text-slate-300 font-medium">
+            🎭 3人のAIエージェントが、あなたの買い物を徹底的に議論します
           </p>
+          <div className="flex items-center justify-center gap-6 mt-4 text-sm text-slate-500 dark:text-slate-400">
+            <div className="flex items-center gap-2">
+              <span className="text-xl">🧠</span>
+              <span>論理的分析</span>
+            </div>
+            <div className="flex items-center gap-2">
+              <span className="text-xl">❤️</span>
+              <span>感情的評価</span>
+            </div>
+            <div className="flex items-center gap-2">
+              <span className="text-xl">⚠️</span>
+              <span>リスク検証</span>
+            </div>
+          </div>
         </div>
 
         {/* 商品入力フォーム（常に表示） */}
@@ -90,12 +123,36 @@ export default function Home() {
             {/* 購入推奨ゲージ */}
             <JudgeGauge score={currentScore} />
 
-            {/* 議論ビュー */}
-            <DebateView turns={turns} isLoading={isLoading} />
+            {/* 2カラムレイアウト: 左に履歴、右に現在のターン */}
+            <div className="grid grid-cols-12 gap-6" style={{ minHeight: '600px' }}>
+              {/* 左サイドバー: 履歴 */}
+              <div className="col-span-3">
+                <TurnHistorySidebar 
+                  turns={turns}
+                  currentTurnId={selectedTurnId}
+                  onSelectTurn={setSelectedTurnId}
+                />
+              </div>
+
+              {/* 右メインエリア: 現在のターン */}
+              <div className="col-span-9">
+                {displayTurn && (
+                  <CurrentTurnView 
+                    turn={displayTurn}
+                    isLoading={isLoading && selectedTurnId === turns[turns.length - 1]?.turn_id}
+                  />
+                )}
+              </div>
+            </div>
 
             {/* ユーザー介入フォーム */}
             {!isLoading && (
-              <InputForm onSubmit={handleNextTurn} />
+              <InputForm 
+                onSubmit={handleNextTurn} 
+                onEnd={handleEndDebate}
+                currentTurn={turns.length}
+                maxTurns={3}
+              />
             )}
           </div>
         )}
