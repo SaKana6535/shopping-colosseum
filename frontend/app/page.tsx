@@ -193,9 +193,6 @@ export default function Home() {
         {/* 議論が開始されている場合 */}
         {sessionId && (
           <div className="space-y-6">
-            {/* 購入推奨ゲージ */}
-            <JudgeGauge score={currentScore} />
-
             {/* 2カラムレイアウト: 左に履歴、右に現在のターン */}
             <div className="grid grid-cols-12 gap-6" style={{ minHeight: '600px' }}>
               {/* 左サイドバー: 履歴 */}
@@ -208,8 +205,11 @@ export default function Home() {
                 />
               </div>
 
-              {/* 右メインエリア: 現在のターン */}
-              <div className="col-span-9">
+              {/* 右メインエリア: 現在のターンと推奨度 */}
+              <div className="col-span-9 space-y-4">
+                {/* 購入推奨ゲージ - 右上に配置 */}
+                <JudgeGauge score={currentScore} />
+                
                 {displayTurn && (
                   <CurrentTurnView 
                     turn={displayTurn}

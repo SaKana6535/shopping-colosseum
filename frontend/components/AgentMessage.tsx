@@ -2,6 +2,7 @@
 
 import { AgentMessage as AgentMessageType } from '@/types/debate';
 import { getAgentConfig } from '@/lib/agentConfigs';
+import AvatarIcon from './AvatarIcon';
 
 interface AgentMessageProps {
   message: AgentMessageType;
@@ -14,8 +15,8 @@ export default function AgentMessage({ message, index }: AgentMessageProps) {
   return (
     <div className="flex gap-3 mb-4 debate-message animate-slideIn">
       {/* アバター */}
-      <div className={`flex-shrink-0 w-11 h-11 rounded-full ${config.bgColor} flex items-center justify-center text-xl shadow-md`}>
-        {config.icon}
+      <div className={`flex-shrink-0 w-11 h-11 rounded-full ${config.bgColor} flex items-center justify-center shadow-lg agent-avatar-${message.role}`}>
+        <AvatarIcon role={message.role} skinColor={config.skinColor} />
       </div>
       
       {/* メッセージ本体 */}

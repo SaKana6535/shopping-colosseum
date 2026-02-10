@@ -2,6 +2,7 @@
 
 import { AgentRole } from '@/types/debate';
 import { AGENT_CONFIGS, DEFAULT_AGENTS } from '@/lib/agentConfigs';
+import AvatarIcon from './AvatarIcon';
 
 interface AgentSelectorProps {
   selectedAgents: AgentRole[];
@@ -78,10 +79,10 @@ export default function AgentSelector({ selectedAgents, onAgentsChange }: AgentS
                 >
                   <div className="flex items-start gap-1.5 h-full">
                     <div className={`
-                      w-6 h-6 rounded-lg flex items-center justify-center text-base flex-shrink-0
+                      w-6 h-6 rounded-lg flex items-center justify-center flex-shrink-0
                       ${config.bgColor}
                     `}>
-                      {config.icon}
+                      <AvatarIcon role={config.role} skinColor={config.skinColor} />
                     </div>
                     <div className="flex-1 min-w-0 overflow-hidden">
                       <div className="font-bold text-xs mb-0.5 text-slate-900 dark:text-white">

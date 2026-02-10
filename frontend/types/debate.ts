@@ -28,6 +28,7 @@ export interface AgentConfig {
   icon: string;
   description: string;
   bgColor: string;
+  skinColor: string;
   label: string;
 }
 
