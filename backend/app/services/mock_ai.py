@@ -1,10 +1,14 @@
+"""モックAIサービス - 実際のAI連携の前のテスト用"""
+
 import random
-from typing import Optional
+from typing import List, Optional
+
 from ..models import AgentMessage, JudgeResult, DebateTurn
+from .ai_service import AIServiceBase
 
 
-class MockAIService:
-    """モックAIサービス - 実際のAI連携の前のテスト用"""
+class MockAIService(AIServiceBase):
+    """モックAIサービス - テンプレートベースの議論生成"""
     
     def __init__(self):
         self.agents_config = {
@@ -37,12 +41,13 @@ class MockAIService:
             }
         }
     
-    def generate_debate(
+    async def generate_debate(
         self,
         turn_id: int,
         product_url: str,
         user_query: str,
-        user_intervention: Optional[str] = None
+        user_intervention: Optional[str] = None,
+        history: Optional[List[dict]] = None,
     ) -> DebateTurn:
         """議論を生成（モック）"""
         
@@ -97,7 +102,3 @@ class MockAIService:
             reason += f" ユーザーからの「{user_intervention}」という指摘を受けて議論が深まりました。"
         
         return JudgeResult(score=score, reason=reason)
-
-
-# グローバルなモックAIサービスインスタンス
-mock_ai_service = MockAIService()

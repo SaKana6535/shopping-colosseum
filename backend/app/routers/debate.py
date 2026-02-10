@@ -6,7 +6,7 @@ from ..models import (
     NextTurnResponse,
 )
 from ..services.session import session_manager
-from ..services.mock_ai import mock_ai_service
+from ..services.factory import get_ai_service
 
 router = APIRouter(prefix="/api/debate", tags=["debate"])
 
@@ -19,6 +19,8 @@ async def start_debate(request: StartDebateRequest):
     商品URLとユーザーの悩みを受け取り、
     新規セッションを作成して初回の議論を返す
     """
+    ai_service = get_ai_service()
+
     # セッションを作成
     session = session_manager.create_session(
         product_url=request.product_url,
@@ -26,11 +28,12 @@ async def start_debate(request: StartDebateRequest):
     )
     
     # 初回の議論を生成
-    turn = mock_ai_service.generate_debate(
+    turn = await ai_service.generate_debate(
         turn_id=1,
         product_url=request.product_url,
         user_query=request.user_query,
-        user_intervention=None
+        user_intervention=None,
+        history=None,
     )
     
     # セッションに保存
@@ -50,6 +53,8 @@ async def next_turn(request: NextTurnRequest):
     セッションIDとユーザーの介入（オプション）を受け取り、
     次のターンの議論を生成して返す
     """
+    ai_service = get_ai_service()
+
     # セッションを取得
     session = session_manager.get_session(request.session_id)
     if not session:
@@ -58,12 +63,13 @@ async def next_turn(request: NextTurnRequest):
     # 次のターンIDを取得
     next_turn_id = session.get_next_turn_id()
     
-    # 次のターンの議論を生成
-    turn = mock_ai_service.generate_debate(
+    # 次のターンの議論を生成（履歴を渡してコンテキストを維持）
+    turn = await ai_service.generate_debate(
         turn_id=next_turn_id,
         product_url=session.product_url,
         user_query=session.user_query,
-        user_intervention=request.user_intervention
+        user_intervention=request.user_intervention,
+        history=session.history,
     )
     
     # セッションに保存
