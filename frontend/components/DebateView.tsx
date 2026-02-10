@@ -35,7 +35,7 @@ export default function DebateView({ turns, isLoading }: DebateViewProps) {
 
             {/* エージェントのメッセージ（チャット形式） */}
             <div>
-              {turn.debate.map((message, msgIndex) => (
+              {[...turn.debate].reverse().map((message, msgIndex) => (
                 <AgentMessage 
                   key={`${turn.turn_id}-${message.agent_name}`} 
                   message={message}

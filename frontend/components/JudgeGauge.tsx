@@ -65,12 +65,12 @@ export default function JudgeGauge({ score }: JudgeGaugeProps) {
       </div>
 
       {/* ラベル */}
-      <div className="flex justify-between items-center text-sm">
-        <span className="text-red-600 dark:text-red-400 font-medium">0% 非推奨</span>
+      <div className="flex justify-between items-center text-base">
+        <span className="text-red-600 dark:text-red-400 font-semibold">0% 非推奨</span>
         <span className={`font-bold text-base ${getTextColor(score)} bg-white dark:bg-slate-800 px-4 py-1 rounded-full shadow`}>
           {getLabel(score)}
         </span>
-        <span className="text-green-600 dark:text-green-400 font-medium">100% 推奨</span>
+        <span className="text-green-600 dark:text-green-400 font-semibold">100% 推奨</span>
       </div>
     </div>
   );

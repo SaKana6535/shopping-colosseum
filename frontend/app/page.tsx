@@ -128,7 +128,15 @@ export default function Home() {
         {/* 議論開始前: 商品入力とエージェント選択 */}
         {!sessionId && (
           <div className="grid grid-cols-10 gap-6 mb-6">
-            {/* 左: 商品入力フォーム 60%) */}
+            {/* 左: エージェント選択 (40%) */}
+            <div className="col-span-4">
+              <AgentSelector
+                selectedAgents={selectedAgents}
+                onAgentsChange={setSelectedAgents}
+              />
+            </div>
+
+            {/* 右: 商品入力フォーム (30%) */}
             <div className="col-span-6">
               <ProductInput
                 onSubmit={handleStartDebate}
@@ -139,14 +147,6 @@ export default function Home() {
                 userQuery={userQuery}
                 onProductUrlChange={setProductUrl}
                 onUserQueryChange={setUserQuery}
-              />
-            </div>
-
-            {/* 右: エージェント選択 (40%) */}
-            <div className="col-span-4">
-              <AgentSelector
-                selectedAgents={selectedAgents}
-                onAgentsChange={setSelectedAgents}
               />
             </div>
           </div>
@@ -204,6 +204,7 @@ export default function Home() {
                   turns={turns}
                   currentTurnId={selectedTurnId}
                   onSelectTurn={setSelectedTurnId}
+                  isLoading={isLoading}
                 />
               </div>
 
@@ -219,14 +220,13 @@ export default function Home() {
             </div>
 
             {/* ユーザー介入フォーム */}
-            {!isLoading && (
-              <InputForm 
-                onSubmit={handleNextTurn} 
-                onEnd={handleEndDebate}
-                currentTurn={turns.length}
-                maxTurns={3}
-              />
-            )}
+            <InputForm 
+              onSubmit={handleNextTurn} 
+              onEnd={handleEndDebate}
+              currentTurn={turns.length}
+              maxTurns={3}
+              isLoading={isLoading}
+            />
           </div>
         )}
       </div>
