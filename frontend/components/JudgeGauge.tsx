@@ -28,17 +28,17 @@ export default function JudgeGauge({ score }: JudgeGaugeProps) {
   };
 
   return (
-    <div className="bg-gradient-to-br from-white to-slate-50 dark:from-slate-800 dark:to-slate-900 rounded-2xl shadow-xl p-6 mb-6 border border-slate-200 dark:border-slate-700">
-      <div className="flex items-center justify-between mb-5">
+    <div className="bg-gradient-to-br from-white to-slate-50 dark:from-slate-800 dark:to-slate-900 rounded-2xl shadow-xl p-4 mb-6 border border-slate-200 dark:border-slate-700">
+      <div className="flex items-center justify-between mb-4">
         <div>
-          <h2 className="text-2xl font-bold text-slate-900 dark:text-white mb-1">
+          <h2 className="text-xl font-bold text-slate-900 dark:text-white mb-1">
             購入推奨度
           </h2>
           <p className="text-sm text-slate-500 dark:text-slate-400">
             AI審判による総合評価
           </p>
         </div>
-        <div className={`text-4xl font-black ${getTextColor(score)}`}>
+        <div className={`text-3xl font-black ${getTextColor(score)}`}>
           {score}%
         </div>
       </div>
@@ -46,7 +46,7 @@ export default function JudgeGauge({ score }: JudgeGaugeProps) {
       {/* ゲージバー */}
       <div className="relative mb-4">
         {/* 背景バー */}
-        <div className="w-full h-10 bg-slate-200 dark:bg-slate-700 rounded-full overflow-hidden shadow-inner">
+        <div className="w-full h-8 bg-slate-200 dark:bg-slate-700 rounded-full overflow-hidden shadow-inner">
           {/* 進捗バー */}
           <div
             className={`gauge-bar h-full ${getColor(score)} rounded-full shadow-lg relative overflow-hidden`}
@@ -58,7 +58,7 @@ export default function JudgeGauge({ score }: JudgeGaugeProps) {
 
         {/* 中立点マーカー（50%） */}
         <div className="absolute top-0 bottom-0 w-1 bg-slate-400 dark:bg-slate-500 left-1/2 transform -translate-x-1/2">
-          <div className="absolute -top-7 left-1/2 -translate-x-1/2 text-xs font-semibold text-slate-600 dark:text-slate-400 bg-white dark:bg-slate-800 px-2 py-1 rounded shadow">
+          <div className="absolute -top-8 left-1/2 -translate-x-1/2 text-sm font-semibold text-slate-600 dark:text-slate-400 bg-white dark:bg-slate-800 px-2 py-1 rounded shadow">
             中立
           </div>
         </div>

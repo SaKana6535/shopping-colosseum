@@ -5,10 +5,11 @@ import uuid
 
 class DebateSession:
     """議論セッションのデータクラス"""
-    def __init__(self, session_id: str, product_url: str, user_query: str):
+    def __init__(self, session_id: str, product_url: str, user_query: str, selected_agents: List[str] = None):
         self.session_id = session_id
         self.product_url = product_url
         self.user_query = user_query
+        self.selected_agents = selected_agents or ['logical', 'emotional', 'critical']
         self.current_turn = 0
         self.history: List[dict] = []
         self.created_at = datetime.now()
@@ -28,10 +29,10 @@ class SessionManager:
     def __init__(self):
         self.sessions: Dict[str, DebateSession] = {}
     
-    def create_session(self, product_url: str, user_query: str) -> DebateSession:
+    def create_session(self, product_url: str, user_query: str, selected_agents: List[str] = None) -> DebateSession:
         """新規セッションを作成"""
         session_id = str(uuid.uuid4())
-        session = DebateSession(session_id, product_url, user_query)
+        session = DebateSession(session_id, product_url, user_query, selected_agents)
         self.sessions[session_id] = session
         return session
     

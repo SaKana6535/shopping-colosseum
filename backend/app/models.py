@@ -5,7 +5,7 @@ from typing import List, Literal, Optional
 class AgentMessage(BaseModel):
     """エージェント個別のメッセージ"""
     agent_name: str
-    role: Literal['logical', 'emotional', 'critical']
+    role: Literal['logical', 'emotional', 'critical', 'cost_conscious', 'eco_friendly', 'aesthetic', 'practical', 'data_driven', 'trendy', 'social_proof']
     content: str
 
 
@@ -26,6 +26,7 @@ class StartDebateRequest(BaseModel):
     """議論開始リクエスト"""
     product_url: str
     user_query: str
+    selected_agents: List[str] = ['logical', 'emotional', 'critical']
 
 
 class StartDebateResponse(BaseModel):
