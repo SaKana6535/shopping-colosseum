@@ -33,7 +33,7 @@ export default function DebateLogSidebar({
         const message =
           err instanceof Error ? err.message : '読み込みに失敗しました';
         if (message === 'FIRESTORE_DISABLED') {
-          setError('議論ログの閲覧にはFirestoreの設定が必要です');
+          setError('過去の議論の閲覧にはFirestoreの設定が必要です');
         } else {
           setError(message);
         }
@@ -55,7 +55,7 @@ export default function DebateLogSidebar({
           {/* ヘッダー */}
           <div className="flex items-center justify-between px-4 py-4 border-b border-slate-200 dark:border-slate-700 shrink-0">
             <h2 className="text-lg font-bold text-slate-900 dark:text-white">
-              議論ログ
+              過去の議論
             </h2>
             <button
               type="button"
@@ -99,7 +99,7 @@ export default function DebateLogSidebar({
             {!isLoading && !error && logs.length === 0 && (
               <div className="rounded-xl bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 px-4 py-8 text-center">
                 <p className="text-sm text-slate-600 dark:text-slate-400">
-                  まだ議論ログがありません
+                  まだ過去の議論がありません
                 </p>
               </div>
             )}

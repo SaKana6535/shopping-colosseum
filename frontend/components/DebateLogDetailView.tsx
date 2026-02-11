@@ -4,7 +4,8 @@ import { useState, useEffect } from 'react';
 import TurnHistorySidebar from './TurnHistorySidebar';
 import CurrentTurnView from './CurrentTurnView';
 import JudgeGauge from './JudgeGauge';
-import { fetchDebateLogDetail } from '@/lib/api';
+import InputForm from './InputForm';
+import { fetchDebateLogDetail, getNextTurn } from '@/lib/api';
 import { DebateLogDetail } from '@/types/debate';
 
 interface DebateLogDetailViewProps {
@@ -19,7 +20,30 @@ export default function DebateLogDetailView({
   const [detail, setDetail] = useState<DebateLogDetail | null>(null);
   const [selectedTurnId, setSelectedTurnId] = useState<number | null>(null);
   const [isLoading, setIsLoading] = useState(true);
+  const [isAddingTurn, setIsAddingTurn] = useState(false);
   const [error, setError] = useState<string | null>(null);
+
+  const handleNextTurn = async (intervention?: string) => {
+    if (!detail) return;
+    setIsAddingTurn(true);
+    setError(null);
+    try {
+      const response = await getNextTurn({
+        session_id: sessionId,
+        user_intervention: intervention,
+      });
+      setDetail({
+        ...detail,
+        history: [...detail.history, response.turn],
+        current_turn: detail.current_turn + 1,
+      });
+      setSelectedTurnId(response.turn.turn_id);
+    } catch (err) {
+      setError(err instanceof Error ? err.message : '次のターンの取得に失敗しました');
+    } finally {
+      setIsAddingTurn(false);
+    }
+  };
 
   useEffect(() => {
     let cancelled = false;
@@ -71,7 +95,7 @@ export default function DebateLogDetailView({
         {/* ヘッダー */}
         <div className="flex items-center justify-between mb-6">
           <h1 className="text-2xl font-bold text-slate-900 dark:text-white">
-            議論ログ
+            過去の議論
           </h1>
           <button
             type="button"
@@ -131,10 +155,22 @@ export default function DebateLogDetailView({
               <div className="col-span-9 space-y-4">
                 <JudgeGauge score={currentScore} />
                 {displayTurn && (
-                  <CurrentTurnView turn={displayTurn} isLoading={false} />
+                  <CurrentTurnView
+                    turn={displayTurn}
+                    isLoading={false}
+                  />
                 )}
               </div>
             </div>
+
+            {/* 続きから議論 */}
+            <InputForm
+              onSubmit={handleNextTurn}
+              onEnd={onClose}
+              currentTurn={detail.current_turn}
+              maxTurns={10}
+              isLoading={isAddingTurn}
+            />
           </div>
         )}
       </div>
