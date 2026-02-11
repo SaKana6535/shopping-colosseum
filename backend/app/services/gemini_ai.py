@@ -266,6 +266,7 @@ class GeminiAIService(AIServiceBase):
         debate_prompt = self._build_debate_prompt(
             turn_id, product_url, user_query, user_intervention, history,
             product_info=product_info,
+            selected_agents=selected_agents,
         )
 
         logger.debug(f"Debate prompt (turn {turn_id}):\n{debate_prompt}")
@@ -379,6 +380,7 @@ class GeminiAIService(AIServiceBase):
         user_intervention: Optional[str] = None,
         history: Optional[List[dict]] = None,
         product_info: Optional[str] = None,
+        selected_agents: Optional[List[str]] = None,
     ) -> str:
         """議論生成用のユーザープロンプトを構築する"""
         parts: list[str] = []
