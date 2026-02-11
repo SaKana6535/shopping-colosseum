@@ -180,9 +180,22 @@ export default function Home() {
                 <h2 className="text-3xl font-black text-slate-900 dark:text-white mb-2">
                   Shopping Colosseum
                 </h2>
-                <p className="text-sm text-slate-500 dark:text-slate-400">
-                  {isPreparing ? '🎭 エージェントが商品を分析中...' : '🎭 AIエージェントが徹底議論中'}
-                </p>
+                <div className="flex items-center gap-2">
+                  <p className="text-sm text-slate-500 dark:text-slate-400">
+                    {isPreparing
+                      ? '🎭 エージェントが商品を分析中...'
+                      : '🎭 AIエージェントが徹底議論中'}
+                  </p>
+                  {!isPreparing && (
+                    <span className={`inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-xs font-bold ${
+                      debateMode === 'battle'
+                        ? 'bg-red-100 text-red-700 dark:bg-red-900/30 dark:text-red-300'
+                        : 'bg-emerald-100 text-emerald-700 dark:bg-emerald-900/30 dark:text-emerald-300'
+                    }`}>
+                      {debateMode === 'battle' ? '⚔️ バトル' : '📝 レビュー'}
+                    </span>
+                  )}
+                </div>
               </div>
             </div>
             

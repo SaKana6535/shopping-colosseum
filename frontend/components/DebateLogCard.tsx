@@ -82,6 +82,15 @@ export default function DebateLogCard({ log }: DebateLogCardProps) {
             <span className="text-xs text-slate-400 dark:text-slate-500">
               ターン {log.current_turn}
             </span>
+            {log.debate_mode && (
+              <span className={`inline-flex items-center px-1.5 py-0.5 rounded text-[10px] font-bold leading-none ${
+                log.debate_mode === 'battle'
+                  ? 'bg-red-100 text-red-600 dark:bg-red-900/30 dark:text-red-400'
+                  : 'bg-emerald-100 text-emerald-600 dark:bg-emerald-900/30 dark:text-emerald-400'
+              }`}>
+                {log.debate_mode === 'battle' ? 'バトル' : 'レビュー'}
+              </span>
+            )}
           </div>
         </div>
       </div>

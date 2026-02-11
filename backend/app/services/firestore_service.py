@@ -38,6 +38,7 @@ def save_session(
     history: list[dict],
     created_at: datetime,
     title: str | None = None,
+    debate_mode: str = "battle",
 ) -> None:
     """セッション全体をFirestoreに保存（作成または更新）"""
     collection = _get_collection()
@@ -50,6 +51,7 @@ def save_session(
         "history": history,
         "created_at": created_at,
         "updated_at": datetime.now(),
+        "debate_mode": debate_mode,
     }
     if title is not None:
         data["title"] = title
@@ -97,6 +99,7 @@ def list_sessions(limit: int = 20, offset: int = 0) -> list[dict]:
                 "user_query": data.get("user_query"),
                 "current_turn": data.get("current_turn", 0),
                 "title": title or "",
+                "debate_mode": data.get("debate_mode", "battle"),
                 "created_at": data.get("created_at"),
                 "updated_at": data.get("updated_at"),
             }

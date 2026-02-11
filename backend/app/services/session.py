@@ -147,6 +147,7 @@ class FirestoreSessionManager(SessionManagerBase):
             current_turn=session.current_turn,
             history=session.history,
             created_at=session.created_at,
+            debate_mode=session.debate_mode,
         )
 
         # キャッシュにも保持
@@ -192,6 +193,7 @@ class FirestoreSessionManager(SessionManagerBase):
             history=session.history,
             created_at=session.created_at,
             title=title,
+            debate_mode=session.debate_mode,
         )
 
     def delete_session(self, session_id: str) -> None:

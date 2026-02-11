@@ -82,6 +82,7 @@ export interface DebateLogSummary {
   user_query: string;
   current_turn: number;
   title?: string;  // 議論のタイトル（チャット風表示用）
+  debate_mode?: DebateMode;
   created_at?: string;
   updated_at?: string;
 }
@@ -92,6 +93,7 @@ export interface DebateLogDetail {
   user_query: string;
   current_turn: number;
   history: DebateTurn[];
+  debate_mode?: DebateMode;
   created_at?: string;
   updated_at?: string;
 }

@@ -79,6 +79,7 @@ class DebateLogSummary(BaseModel):
     user_query: str
     current_turn: int
     title: str = ""  # 議論のタイトル（チャット風表示用）
+    debate_mode: Optional[DebateMode] = None
     created_at: Optional[datetime] = None
     updated_at: Optional[datetime] = None
 
@@ -90,6 +91,7 @@ class DebateLogDetail(BaseModel):
     user_query: str
     current_turn: int
     history: List[DebateTurn]
+    debate_mode: Optional[DebateMode] = None
     created_at: Optional[datetime] = None
     updated_at: Optional[datetime] = None
 

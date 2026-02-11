@@ -142,6 +142,7 @@ async def get_debate_log(session_id: str):
         user_query=data["user_query"],
         current_turn=data.get("current_turn", 0),
         history=history,
+        debate_mode=data.get("debate_mode"),
         created_at=data.get("created_at"),
         updated_at=data.get("updated_at"),
     )

@@ -129,9 +129,20 @@ export default function DebateLogDetailModal({
             <div className="space-y-4">
               {/* 商品情報 */}
               <div className="rounded-xl bg-white dark:bg-slate-800 p-4 border border-slate-200 dark:border-slate-700">
-                <p className="text-xs text-slate-500 dark:text-slate-400 font-mono truncate mb-1">
-                  {detail.product_url}
-                </p>
+                <div className="flex items-center gap-2 mb-1">
+                  <p className="text-xs text-slate-500 dark:text-slate-400 font-mono truncate flex-1">
+                    {detail.product_url}
+                  </p>
+                  {detail.debate_mode && (
+                    <span className={`inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-xs font-bold shrink-0 ${
+                      detail.debate_mode === 'battle'
+                        ? 'bg-red-100 text-red-700 dark:bg-red-900/30 dark:text-red-300'
+                        : 'bg-emerald-100 text-emerald-700 dark:bg-emerald-900/30 dark:text-emerald-300'
+                    }`}>
+                      {detail.debate_mode === 'battle' ? '⚔️ バトル' : '📝 レビュー'}
+                    </span>
+                  )}
+                </div>
                 <p className="text-sm text-slate-700 dark:text-slate-300">
                   {detail.user_query || '（悩みなし）'}
                 </p>
