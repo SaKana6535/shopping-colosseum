@@ -4,6 +4,7 @@ import { useState } from 'react';
 import ProductInput from '@/components/ProductInput';
 import AgentSelector from '@/components/AgentSelector';
 import CurrentTurnView from '@/components/CurrentTurnView';
+import ThinkingView from '@/components/ThinkingView';
 import TurnHistorySidebar from '@/components/TurnHistorySidebar';
 import JudgeGauge from '@/components/JudgeGauge';
 import InputForm from '@/components/InputForm';
@@ -17,14 +18,19 @@ export default function Home() {
   const [turns, setTurns] = useState<DebateTurn[]>([]);
   const [selectedTurnId, setSelectedTurnId] = useState<number | null>(null);
   const [isLoading, setIsLoading] = useState(false);
+  const [isPreparing, setIsPreparing] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [selectedAgents, setSelectedAgents] = useState<AgentRole[]>([...DEFAULT_AGENTS]);
   const [productUrl, setProductUrl] = useState('');
   const [userQuery, setUserQuery] = useState('');
   const [showResultModal, setShowResultModal] = useState(false);
 
+  // 議論画面を表示すべきか（準備中 or 議論中）
+  const isDebateActive = isPreparing || !!sessionId;
+
   const handleStartDebate = async (productUrl: string, userQuery: string) => {
     setIsLoading(true);
+    setIsPreparing(true);
     setError(null);
     setProductUrl(productUrl);
     setUserQuery(userQuery);
@@ -34,8 +40,10 @@ export default function Home() {
       setSessionId(response.session_id);
       setTurns([response.turn]);
       setSelectedTurnId(response.turn.turn_id);
+      setIsPreparing(false);
     } catch (err) {
       setError(err instanceof Error ? err.message : '議論の開始に失敗しました');
+      setIsPreparing(false);
     } finally {
       setIsLoading(false);
     }
@@ -76,6 +84,7 @@ export default function Home() {
     setSessionId(null);
     setTurns([]);
     setSelectedTurnId(null);
+    setIsPreparing(false);
     setError(null);
     setSelectedAgents([...DEFAULT_AGENTS]);
     setProductUrl('');
@@ -91,7 +100,7 @@ export default function Home() {
     <main className="min-h-screen bg-gradient-to-br from-slate-50 via-blue-50/30 to-purple-50/30 dark:from-slate-900 dark:via-slate-900 dark:to-slate-900">
       <div className="container mx-auto px-4 py-8 max-w-7xl">
         {/* ヘッダー（議論開始前のみ表示） */}
-        {!sessionId && (
+        {!isDebateActive && (
           <div className="text-center mb-10">
             <div className="inline-block mb-4">
               <div className="bg-gradient-to-r from-blue-600 to-purple-600 text-transparent bg-clip-text">
@@ -132,7 +141,7 @@ export default function Home() {
         )}
 
         {/* 議論開始前: 商品入力とエージェント選択 */}
-        {!sessionId && (
+        {!isDebateActive && (
           <div className="grid grid-cols-10 gap-6 mb-6">
             {/* 左: エージェント選択 (40%) */}
             <div className="col-span-4">
@@ -147,7 +156,7 @@ export default function Home() {
               <ProductInput
                 onSubmit={handleStartDebate}
                 isLoading={isLoading}
-                isDebating={!!sessionId}
+                isDebating={false}
                 onReset={handleReset}
                 productUrl={productUrl}
                 userQuery={userQuery}
@@ -158,8 +167,8 @@ export default function Home() {
           </div>
         )}
 
-        {/* 議論中: タイトルと商品入力を2カラム */}
-        {sessionId && (
+        {/* 議論中（準備中含む）: タイトルと商品入力を2カラム */}
+        {isDebateActive && (
           <div className="grid grid-cols-2 gap-6 mb-6">
             {/* 左: タイトル */}
             <div className="flex items-center h-full">
@@ -168,7 +177,7 @@ export default function Home() {
                   Shopping Colosseum
                 </h2>
                 <p className="text-sm text-slate-500 dark:text-slate-400">
-                  🎭 AIエージェントが徹底議論中
+                  {isPreparing ? '🎭 エージェントが商品を分析中...' : '🎭 AIエージェントが徹底議論中'}
                 </p>
               </div>
             </div>
@@ -178,7 +187,7 @@ export default function Home() {
               <ProductInput
                 onSubmit={handleStartDebate}
                 isLoading={isLoading}
-                isDebating={!!sessionId}
+                isDebating={true}
                 onReset={handleReset}
                 productUrl={productUrl}
                 userQuery={userQuery}
@@ -196,8 +205,8 @@ export default function Home() {
           </div>
         )}
 
-        {/* 議論が開始されている場合 */}
-        {sessionId && (
+        {/* 議論が開始されている場合（準備中含む） */}
+        {isDebateActive && (
           <div className="space-y-6">
             {/* 2カラムレイアウト: 左に履歴、右に現在のターン */}
             <div className="grid grid-cols-12 gap-6" style={{ minHeight: '600px' }}>
@@ -216,7 +225,13 @@ export default function Home() {
                 {/* 購入推奨ゲージ - 右上に配置 */}
                 <JudgeGauge score={currentScore} />
                 
-                {displayTurn && (
+                {/* 準備中: ThinkingView を表示 */}
+                {isPreparing && (
+                  <ThinkingView selectedAgents={selectedAgents} />
+                )}
+
+                {/* 議論結果が返ってきた後: CurrentTurnView を表示 */}
+                {!isPreparing && displayTurn && (
                   <CurrentTurnView 
                     turn={displayTurn}
                     isLoading={isLoading && selectedTurnId === turns[turns.length - 1]?.turn_id}
@@ -225,14 +240,16 @@ export default function Home() {
               </div>
             </div>
 
-            {/* ユーザー介入フォーム */}
-            <InputForm 
-              onSubmit={handleNextTurn} 
-              onEnd={handleEndDebate}
-              currentTurn={turns.length}
-              maxTurns={3}
-              isLoading={isLoading}
-            />
+            {/* ユーザー介入フォーム（準備中は非表示） */}
+            {!isPreparing && (
+              <InputForm 
+                onSubmit={handleNextTurn} 
+                onEnd={handleEndDebate}
+                currentTurn={turns.length}
+                maxTurns={3}
+                isLoading={isLoading}
+              />
+            )}
           </div>
         )}
 
