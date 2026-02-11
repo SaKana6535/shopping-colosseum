@@ -7,6 +7,7 @@ import CurrentTurnView from '@/components/CurrentTurnView';
 import TurnHistorySidebar from '@/components/TurnHistorySidebar';
 import JudgeGauge from '@/components/JudgeGauge';
 import InputForm from '@/components/InputForm';
+import ResultModal from '@/components/ResultModal';
 import { DebateTurn, AgentRole } from '@/types/debate';
 import { startDebate, getNextTurn } from '@/lib/api';
 import { DEFAULT_AGENTS } from '@/lib/agentConfigs';
@@ -20,6 +21,7 @@ export default function Home() {
   const [selectedAgents, setSelectedAgents] = useState<AgentRole[]>([...DEFAULT_AGENTS]);
   const [productUrl, setProductUrl] = useState('');
   const [userQuery, setUserQuery] = useState('');
+  const [showResultModal, setShowResultModal] = useState(false);
 
   const handleStartDebate = async (productUrl: string, userQuery: string) => {
     setIsLoading(true);
@@ -61,8 +63,12 @@ export default function Home() {
   };
 
   const handleEndDebate = () => {
-    // 議論終了時の処理（必要に応じてバックエンドに通知）
-    alert('議論が終了しました。最終的な購入推奨度: ' + currentScore + '%');
+    // 結果モーダルを表示
+    setShowResultModal(true);
+  };
+
+  const handleCloseResultModal = () => {
+    setShowResultModal(false);
     handleReset();
   };
 
@@ -229,6 +235,16 @@ export default function Home() {
             />
           </div>
         )}
+
+        {/* 結果モーダル */}
+        <ResultModal
+          isOpen={showResultModal}
+          onClose={handleCloseResultModal}
+          finalScore={currentScore}
+          turns={turns}
+          productUrl={productUrl}
+          userQuery={userQuery}
+        />
       </div>
     </main>
   );

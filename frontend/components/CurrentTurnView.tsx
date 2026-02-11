@@ -10,7 +10,7 @@ interface CurrentTurnViewProps {
 
 export default function CurrentTurnView({ turn, isLoading }: CurrentTurnViewProps) {
   return (
-    <div className="bg-gradient-to-br from-white to-slate-50 dark:from-slate-800 dark:to-slate-900 rounded-2xl shadow-2xl p-6 border border-slate-200 dark:border-slate-700" style={{ minHeight: '600px' }}>
+    <div className="bg-gradient-to-br from-white to-slate-50 dark:from-slate-800 dark:to-slate-900 rounded-2xl shadow-2xl p-6 border border-slate-200 dark:border-slate-700 relative">
       {/* ヘッダー */}
       <div className="mb-6 pb-3 border-b border-slate-200 dark:border-slate-700">
         <div className="flex items-center gap-3">
@@ -29,7 +29,7 @@ export default function CurrentTurnView({ turn, isLoading }: CurrentTurnViewProp
       </div>
 
       {/* ディスカッションエリア */}
-      <div className="space-y-1 mb-6">
+      <div className="space-y-1 mb-4">
         {turn.debate.map((message, msgIndex) => (
           <AgentMessage 
             key={`${turn.turn_id}-${message.agent_name}`} 
