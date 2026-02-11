@@ -70,3 +70,29 @@ export interface DebateState {
   isLoading: boolean;
   error: string | null;
 }
+
+// 議論ログ関連（Firestore）
+export interface DebateLogSummary {
+  session_id: string;
+  product_url: string;
+  user_query: string;
+  current_turn: number;
+  title?: string;  // 議論のタイトル（チャット風表示用）
+  created_at?: string;
+  updated_at?: string;
+}
+
+export interface DebateLogDetail {
+  session_id: string;
+  product_url: string;
+  user_query: string;
+  current_turn: number;
+  history: DebateTurn[];
+  created_at?: string;
+  updated_at?: string;
+}
+
+export interface DebateLogListResponse {
+  logs: DebateLogSummary[];
+  count: number;
+}

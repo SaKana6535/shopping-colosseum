@@ -161,6 +161,15 @@ class FirestoreSessionManager(SessionManagerBase):
     def save_session(self, session: DebateSession) -> None:
         """セッションをFirestoreに永続化"""
         from . import firestore_service
+        from .title_generator import generate_debate_title
+
+        title = None
+        if session.history:
+            title = generate_debate_title(
+                session.history[0],
+                user_query=session.user_query,
+                product_url=session.product_url,
+            )
 
         firestore_service.save_session(
             session_id=session.session_id,
@@ -169,6 +178,7 @@ class FirestoreSessionManager(SessionManagerBase):
             current_turn=session.current_turn,
             history=session.history,
             created_at=session.created_at,
+            title=title,
         )
 
     def delete_session(self, session_id: str) -> None:

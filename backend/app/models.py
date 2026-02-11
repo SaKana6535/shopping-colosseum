@@ -56,6 +56,7 @@ class DebateLogSummary(BaseModel):
     product_url: str
     user_query: str
     current_turn: int
+    title: str = ""  # 議論のタイトル（チャット風表示用）
     created_at: Optional[datetime] = None
     updated_at: Optional[datetime] = None
 

@@ -37,21 +37,23 @@ def save_session(
     current_turn: int,
     history: list[dict],
     created_at: datetime,
+    title: str | None = None,
 ) -> None:
     """セッション全体をFirestoreに保存（作成または更新）"""
     collection = _get_collection()
     doc_ref = collection.document(session_id)
-    doc_ref.set(
-        {
-            "session_id": session_id,
-            "product_url": product_url,
-            "user_query": user_query,
-            "current_turn": current_turn,
-            "history": history,
-            "created_at": created_at,
-            "updated_at": datetime.now(),
-        }
-    )
+    data = {
+        "session_id": session_id,
+        "product_url": product_url,
+        "user_query": user_query,
+        "current_turn": current_turn,
+        "history": history,
+        "created_at": created_at,
+        "updated_at": datetime.now(),
+    }
+    if title is not None:
+        data["title"] = title
+    doc_ref.set(data)
     logger.debug(f"Session {session_id} saved to Firestore (turn={current_turn})")
 
 
@@ -66,6 +68,8 @@ def load_session(session_id: str) -> Optional[dict]:
 
 def list_sessions(limit: int = 20, offset: int = 0) -> list[dict]:
     """議論ログの一覧を取得（新しい順）"""
+    from .title_generator import generate_debate_title
+
     collection = _get_collection()
     query = (
         collection.order_by("created_at", direction=firestore.Query.DESCENDING)
@@ -77,12 +81,22 @@ def list_sessions(limit: int = 20, offset: int = 0) -> list[dict]:
     sessions = []
     for doc in docs:
         data = doc.to_dict()
+        title = data.get("title")
+        # 既存データにtitleがない場合は議論内容から生成
+        if not title and data.get("history"):
+            first_turn = data["history"][0]
+            title = generate_debate_title(
+                first_turn,
+                user_query=data.get("user_query", ""),
+                product_url=data.get("product_url", ""),
+            )
         sessions.append(
             {
                 "session_id": data.get("session_id"),
                 "product_url": data.get("product_url"),
                 "user_query": data.get("user_query"),
                 "current_turn": data.get("current_turn", 0),
+                "title": title or "",
                 "created_at": data.get("created_at"),
                 "updated_at": data.get("updated_at"),
             }
