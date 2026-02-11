@@ -69,7 +69,7 @@ export default function AgentSelector({ selectedAgents, onAgentsChange }: AgentS
                   onClick={() => toggleAgent(config.role)}
                   disabled={isOnlyOne}
                   className={`
-                    relative p-2 rounded-lg border-2 text-left transition-all h-[60px]
+                    relative p-2 rounded-lg border-2 text-left transition-all
                     ${isSelected 
                       ? 'bg-blue-50 dark:bg-blue-900/20 border-blue-500 dark:border-blue-600 shadow-md'
                       : 'bg-white dark:bg-slate-800 border-slate-200 dark:border-slate-700 hover:border-slate-300 dark:hover:border-slate-600'
@@ -77,9 +77,9 @@ export default function AgentSelector({ selectedAgents, onAgentsChange }: AgentS
                     ${isOnlyOne ? 'opacity-60 cursor-not-allowed' : 'cursor-pointer hover:scale-102'}
                   `}
                 >
-                  <div className="flex items-start gap-1.5 h-full">
+                  <div className="flex items-center gap-2">
                     <div className={`
-                      w-6 h-6 rounded-lg flex items-center justify-center flex-shrink-0
+                      w-10 h-10 rounded-full flex items-center justify-center flex-shrink-0 overflow-hidden
                       ${config.bgColor}
                     `}>
                       <AvatarIcon role={config.role} skinColor={config.skinColor} />
