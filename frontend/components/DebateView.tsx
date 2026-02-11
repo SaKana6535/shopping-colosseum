@@ -16,40 +16,46 @@ export default function DebateView({ turns, isLoading }: DebateViewProps) {
   return (
     <div className="bg-white dark:bg-slate-800 rounded-xl shadow-lg p-6">
       <h2 className="text-2xl font-bold text-slate-900 dark:text-white mb-6">
-        議論の内容
+        🎭 議論の様子
       </h2>
 
-      <div className="space-y-8">
+      <div className="space-y-2">
         {turns.map((turn) => (
-          <div key={turn.turn_id} className="space-y-4">
-            {/* ターン番号 */}
-            <div className="flex items-center gap-3">
-              <div className="bg-primary-100 dark:bg-primary-900/30 text-primary-700 dark:text-primary-300 px-3 py-1 rounded-full text-sm font-semibold">
-                ターン {turn.turn_id}
+          <div key={turn.turn_id}>
+            {/* ターン区切り（控えめに） */}
+            {turn.turn_id > 1 && (
+              <div className="flex items-center gap-3 my-6">
+                <div className="flex-1 h-px bg-slate-200 dark:bg-slate-700"></div>
+                <div className="text-xs text-slate-400 dark:text-slate-500">
+                  ターン {turn.turn_id}
+                </div>
+                <div className="flex-1 h-px bg-slate-200 dark:bg-slate-700"></div>
               </div>
-              <div className="flex-1 h-px bg-slate-200 dark:bg-slate-700"></div>
-            </div>
+            )}
 
-            {/* エージェントのメッセージ */}
-            <div className="space-y-3">
-              {turn.debate.map((message, index) => (
+            {/* エージェントのメッセージ（チャット形式） */}
+            <div>
+              {[...turn.debate].reverse().map((message, msgIndex) => (
                 <AgentMessage 
                   key={`${turn.turn_id}-${message.agent_name}`} 
                   message={message}
-                  index={index}
+                  index={msgIndex}
                 />
               ))}
             </div>
 
             {/* 審判の判定 */}
-            <div className="bg-slate-50 dark:bg-slate-700/50 border border-slate-200 dark:border-slate-600 rounded-lg p-4 mt-4">
+            <div className="bg-gradient-to-r from-slate-100 to-slate-50 dark:from-slate-700/50 dark:to-slate-800/50 border-l-4 border-slate-400 dark:border-slate-500 rounded-r-lg p-4 my-4 mx-4">
               <div className="flex items-center gap-2 mb-2">
                 <span className="text-xl">⚖️</span>
-                <h4 className="font-semibold text-slate-900 dark:text-white">
+                <h4 className="font-semibold text-slate-900 dark:text-white text-sm">
                   AI審判の判定
                 </h4>
+                <span className="ml-auto text-lg font-bold text-slate-700 dark:text-slate-300">
+                  {turn.judge.score}%
+                </span>
               </div>
-              <p className="text-slate-700 dark:text-slate-300 text-sm">
+              <p className="text-slate-600 dark:text-slate-400 text-sm">
                 {turn.judge.reason}
               </p>
             </div>

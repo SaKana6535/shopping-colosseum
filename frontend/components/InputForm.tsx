@@ -4,9 +4,13 @@ import { useState } from 'react';
 
 interface InputFormProps {
   onSubmit: (intervention?: string) => void;
+  onEnd?: () => void;
+  currentTurn: number;
+  maxTurns?: number;
+  isLoading?: boolean;
 }
 
-export default function InputForm({ onSubmit }: InputFormProps) {
+export default function InputForm({ onSubmit, onEnd, currentTurn, maxTurns = 3, isLoading = false }: InputFormProps) {
   const [intervention, setIntervention] = useState('');
   const [showInput, setShowInput] = useState(false);
 
@@ -29,29 +33,77 @@ export default function InputForm({ onSubmit }: InputFormProps) {
     'コストパフォーマンスを重視',
   ];
 
+  const isMaxTurnReached = currentTurn >= maxTurns;
+
   return (
-    <div className="bg-white dark:bg-slate-800 rounded-xl shadow-lg p-6">
-      <h3 className="text-lg font-bold text-slate-900 dark:text-white mb-4">
+    <div className="bg-gradient-to-br from-white to-slate-50 dark:from-slate-800 dark:to-slate-900 rounded-xl shadow-lg p-6 border border-slate-200 dark:border-slate-700">
+      <h3 className="text-lg font-bold text-slate-900 dark:text-white mb-4 flex items-center gap-2">
+        <span className="text-xl">💬</span>
         次のアクション
       </h3>
 
       {!showInput ? (
         <div className="space-y-3">
-          {/* 次のターンボタン */}
-          <button
-            onClick={handleNextTurn}
-            className="w-full bg-primary-600 hover:bg-primary-700 text-white font-semibold py-3 px-6 rounded-lg transition-colors duration-200"
-          >
-            次のターンへ進む
-          </button>
-
-          {/* 介入ボタン */}
-          <button
-            onClick={() => setShowInput(true)}
-            className="w-full bg-slate-600 hover:bg-slate-700 text-white font-semibold py-3 px-6 rounded-lg transition-colors duration-200"
-          >
-            議論に介入する
-          </button>
+          {isMaxTurnReached ? (
+            /* 3ターン後は終了か継続を選択 */
+            <>
+              <div className="bg-amber-50 dark:bg-amber-900/20 border border-amber-200 dark:border-amber-800 text-amber-800 dark:text-amber-200 px-4 py-3 rounded-lg mb-3">
+                <p className="text-sm">
+                  💡 {maxTurns}ターンが終了しました。議論を終了するか、継続するか選択してください。
+                </p>
+              </div>
+              <button
+                onClick={handleNextTurn}
+                disabled={isLoading}
+                className="w-full bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white font-semibold py-3 px-6 rounded-lg transition-all shadow-md hover:shadow-lg disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
+              >
+                {isLoading ? (
+                  <>
+                    <div className="animate-spin rounded-full h-5 w-5 border-b-2 border-white"></div>
+                    <span>議論を考えています...</span>
+                  </>
+                ) : (
+                  '議論を継続する'
+                )}
+              </button>
+              <button
+                onClick={() => setShowInput(true)}
+                className="w-full border-2 border-slate-300 dark:border-slate-600 hover:bg-slate-100 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-300 font-semibold py-3 px-6 rounded-lg transition-all"
+              >
+                議論に介入してから継続
+              </button>
+              <button
+                onClick={onEnd}
+                className="w-full bg-slate-600 hover:bg-slate-700 text-white font-semibold py-3 px-6 rounded-lg transition-all shadow-md hover:shadow-lg"
+              >
+                議論を終了する
+              </button>
+            </>
+          ) : (
+            /* 3ターン未満は通常の進行 */
+            <>
+              <button
+                onClick={handleNextTurn}
+                disabled={isLoading}
+                className="w-full bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white font-semibold py-3 px-6 rounded-lg transition-all shadow-md hover:shadow-lg disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
+              >
+                {isLoading ? (
+                  <>
+                    <div className="animate-spin rounded-full h-5 w-5 border-b-2 border-white"></div>
+                    <span>議論を考えています...</span>
+                  </>
+                ) : (
+                  `次のターンへ進む (${currentTurn}/${maxTurns})`
+                )}
+              </button>
+              <button
+                onClick={() => setShowInput(true)}
+                className="w-full bg-slate-600 hover:bg-slate-700 text-white font-semibold py-3 px-6 rounded-lg transition-all shadow-md hover:shadow-lg"
+              >
+                議論に介入する
+              </button>
+            </>
+          )}
         </div>
       ) : (
         <form onSubmit={handleSubmit} className="space-y-4">

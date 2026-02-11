@@ -3,12 +3,33 @@
  * Backendのデータモデルと対応
  */
 
-export type AgentRole = 'logical' | 'emotional' | 'critical';
+export type AgentRole = 
+  | 'logical' 
+  | 'emotional' 
+  | 'critical' 
+  | 'cost_conscious' 
+  | 'eco_friendly' 
+  | 'aesthetic' 
+  | 'practical' 
+  | 'data_driven' 
+  | 'trendy' 
+  | 'social_proof';
 
 export interface AgentMessage {
   agent_name: string;
   role: AgentRole;
   content: string;
+}
+
+export interface AgentConfig {
+  role: AgentRole;
+  name: string;
+  jaName: string;
+  icon: string;
+  description: string;
+  bgColor: string;
+  skinColor: string;
+  label: string;
 }
 
 export interface JudgeResult {
@@ -25,6 +46,7 @@ export interface DebateTurn {
 export interface StartDebateRequest {
   product_url: string;
   user_query: string;
+  selected_agents?: string[];
 }
 
 export interface StartDebateResponse {

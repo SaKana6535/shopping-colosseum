@@ -1,6 +1,7 @@
 """AIサービスファクトリ - 環境変数に基づいてサービスインスタンスを切り替える"""
 
 import logging
+from typing import Optional
 
 from ..config import settings
 from .ai_service import AIServiceBase
@@ -9,7 +10,7 @@ from .mock_ai import MockAIService
 logger = logging.getLogger(__name__)
 
 # シングルトンインスタンスのキャッシュ
-_ai_service_instance: AIServiceBase | None = None
+_ai_service_instance: Optional[AIServiceBase] = None
 
 
 def get_ai_service() -> AIServiceBase:

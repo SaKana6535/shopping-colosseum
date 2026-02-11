@@ -34,21 +34,105 @@ body {
 
 /* カスタムスタイル */
 .debate-message {
-  @apply rounded-lg p-4 mb-3 shadow-sm;
   animation: slideIn 0.3s ease-out;
 }
 
 @keyframes slideIn {
   from {
     opacity: 0;
-    transform: translateY(10px);
+    transform: translateX(-10px);
   }
   to {
     opacity: 1;
-    transform: translateY(0);
+    transform: translateX(0);
   }
 }
 
+@keyframes shimmer {
+  0% {
+    transform: translateX(-100%);
+  }
+  100% {
+    transform: translateX(100%);
+  }
+}
+
+.animate-shimmer {
+  animation: shimmer 2s infinite;
+}
+
+/* エージェント別アニメーション */
+@keyframes logical-pulse {
+  0%, 100% { transform: scale(1); }
+  50% { transform: scale(1.05); }
+}
+
+@keyframes emotional-bounce {
+  0%, 100% { transform: translateY(0); }
+  25% { transform: translateY(-3px); }
+  75% { transform: translateY(-1px); }
+}
+
+@keyframes critical-shake {
+  0%, 100% { transform: translateX(0); }
+  25% { transform: translateX(-2px); }
+  75% { transform: translateX(2px); }
+}
+
+@keyframes cost-wiggle {
+  0%, 100% { transform: rotate(0deg); }
+  25% { transform: rotate(-2deg); }
+  75% { transform: rotate(2deg); }
+}
+
+@keyframes eco-sway {
+  0%, 100% { transform: translateY(0) rotate(0deg); }
+  50% { transform: translateY(-2px) rotate(1deg); }
+}
+
+@keyframes aesthetic-shimmer {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.85; }
+}
+
+@keyframes practical-nod {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(2px); }
+}
+
+@keyframes data-blink {
+  0%, 90%, 100% { opacity: 1; }
+  95% { opacity: 0.7; }
+}
+
+@keyframes trendy-spin {
+  0%, 100% { transform: rotate(0deg) scale(1); }
+  50% { transform: rotate(5deg) scale(1.03); }
+}
+
+@keyframes social-wave {
+  0%, 100% { transform: translateX(0); }
+  33% { transform: translateX(1px); }
+  66% { transform: translateX(-1px); }
+}
+
+.agent-avatar-logical { animation: logical-pulse 2s ease-in-out infinite; }
+.agent-avatar-emotional { animation: emotional-bounce 1.5s ease-in-out infinite; }
+.agent-avatar-critical { animation: critical-shake 2s ease-in-out infinite; }
+.agent-avatar-cost_conscious { animation: cost-wiggle 2.5s ease-in-out infinite; }
+.agent-avatar-eco_friendly { animation: eco-sway 3s ease-in-out infinite; }
+.agent-avatar-aesthetic { animation: aesthetic-shimmer 2s ease-in-out infinite; }
+.agent-avatar-practical { animation: practical-nod 2s ease-in-out infinite; }
+.agent-avatar-data_driven { animation: data-blink 3s ease-in-out infinite; }
+.agent-avatar-trendy { animation: trendy-spin 2s ease-in-out infinite; }
+.agent-avatar-social_proof { animation: social-wave 2s ease-in-out infinite; }
+
 .gauge-bar {
   transition: width 0.5s ease-out, background-color 0.5s ease-out;
+}
+
+/* 2カラムレイアウト */
+.debate-layout {
+  height: calc(100vh - 400px);
+  min-height: 500px;
 }

@@ -15,14 +15,20 @@ const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || '';
  * 議論を開始する
  */
 export async function startDebate(
-  request: StartDebateRequest
+  productUrl: string,
+  userQuery: string,
+  selectedAgents: string[] = ['logical', 'emotional', 'critical']
 ): Promise<StartDebateResponse> {
   const response = await fetch(`${API_BASE_URL}/api/debate/start`, {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
     },
-    body: JSON.stringify(request),
+    body: JSON.stringify({
+      product_url: productUrl,
+      user_query: userQuery,
+      selected_agents: selectedAgents,
+    }),
   });
 
   if (!response.ok) {
