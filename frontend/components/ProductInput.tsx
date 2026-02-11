@@ -61,7 +61,7 @@ export default function ProductInput({
         <div className="flex items-center justify-between gap-4">
           <div className="flex-1 min-w-0">
             <div className="flex items-center gap-2 text-sm text-slate-600 dark:text-slate-400">
-              <span className="font-semibold text-slate-700 dark:text-slate-300 shrink-0">商品:</span>
+              <span className="font-semibold text-base text-slate-700 dark:text-slate-300 shrink-0">商品 : </span>
               <a 
                 href={productUrl} 
                 target="_blank" 
@@ -72,7 +72,7 @@ export default function ProductInput({
               </a>
             </div>
             <div className="flex items-center gap-2 text-sm text-slate-600 dark:text-slate-400 mt-1">
-              <span className="font-semibold text-slate-700 dark:text-slate-300 shrink-0">悩み:</span>
+              <span className="font-semibold text-base text-slate-700 dark:text-slate-300 shrink-0">悩み : </span>
               <span className="truncate">{userQuery}</span>
             </div>
           </div>

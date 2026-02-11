@@ -6,15 +6,16 @@ interface TurnHistorySidebarProps {
   turns: DebateTurn[];
   currentTurnId: number | null;
   onSelectTurn: (turnId: number) => void;
+  isLoading?: boolean;
 }
 
-export default function TurnHistorySidebar({ turns, currentTurnId, onSelectTurn }: TurnHistorySidebarProps) {
+export default function TurnHistorySidebar({ turns, currentTurnId, onSelectTurn, isLoading = false }: TurnHistorySidebarProps) {
   if (turns.length === 0) {
     return null;
   }
 
   return (
-    <div className="bg-gradient-to-br from-white to-slate-50 dark:from-slate-800 dark:to-slate-900 rounded-2xl shadow-xl p-5 border border-slate-200 dark:border-slate-700" style={{ minHeight: '600px', maxHeight: '600px', overflowY: 'auto' }}>
+    <div className={`bg-gradient-to-br from-white to-slate-50 dark:from-slate-800 dark:to-slate-900 rounded-2xl shadow-xl p-5 border border-slate-200 dark:border-slate-700 transition-opacity ${isLoading ? 'opacity-50' : 'opacity-100'}`} style={{ minHeight: '600px', maxHeight: '600px', overflowY: 'auto' }}>
       <div className="sticky top-0 bg-gradient-to-br from-white to-slate-50 dark:from-slate-800 dark:to-slate-900 pb-3 mb-4 border-b-2 border-slate-200 dark:border-slate-700 z-10">
         <h3 className="text-xl font-bold text-slate-900 dark:text-white flex items-center gap-2">
           <span className="text-2xl">📜</span>

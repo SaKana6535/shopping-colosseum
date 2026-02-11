@@ -48,6 +48,85 @@ body {
   }
 }
 
+@keyframes shimmer {
+  0% {
+    transform: translateX(-100%);
+  }
+  100% {
+    transform: translateX(100%);
+  }
+}
+
+.animate-shimmer {
+  animation: shimmer 2s infinite;
+}
+
+/* エージェント別アニメーション */
+@keyframes logical-pulse {
+  0%, 100% { transform: scale(1); }
+  50% { transform: scale(1.05); }
+}
+
+@keyframes emotional-bounce {
+  0%, 100% { transform: translateY(0); }
+  25% { transform: translateY(-3px); }
+  75% { transform: translateY(-1px); }
+}
+
+@keyframes critical-shake {
+  0%, 100% { transform: translateX(0); }
+  25% { transform: translateX(-2px); }
+  75% { transform: translateX(2px); }
+}
+
+@keyframes cost-wiggle {
+  0%, 100% { transform: rotate(0deg); }
+  25% { transform: rotate(-2deg); }
+  75% { transform: rotate(2deg); }
+}
+
+@keyframes eco-sway {
+  0%, 100% { transform: translateY(0) rotate(0deg); }
+  50% { transform: translateY(-2px) rotate(1deg); }
+}
+
+@keyframes aesthetic-shimmer {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.85; }
+}
+
+@keyframes practical-nod {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(2px); }
+}
+
+@keyframes data-blink {
+  0%, 90%, 100% { opacity: 1; }
+  95% { opacity: 0.7; }
+}
+
+@keyframes trendy-spin {
+  0%, 100% { transform: rotate(0deg) scale(1); }
+  50% { transform: rotate(5deg) scale(1.03); }
+}
+
+@keyframes social-wave {
+  0%, 100% { transform: translateX(0); }
+  33% { transform: translateX(1px); }
+  66% { transform: translateX(-1px); }
+}
+
+.agent-avatar-logical { animation: logical-pulse 2s ease-in-out infinite; }
+.agent-avatar-emotional { animation: emotional-bounce 1.5s ease-in-out infinite; }
+.agent-avatar-critical { animation: critical-shake 2s ease-in-out infinite; }
+.agent-avatar-cost_conscious { animation: cost-wiggle 2.5s ease-in-out infinite; }
+.agent-avatar-eco_friendly { animation: eco-sway 3s ease-in-out infinite; }
+.agent-avatar-aesthetic { animation: aesthetic-shimmer 2s ease-in-out infinite; }
+.agent-avatar-practical { animation: practical-nod 2s ease-in-out infinite; }
+.agent-avatar-data_driven { animation: data-blink 3s ease-in-out infinite; }
+.agent-avatar-trendy { animation: trendy-spin 2s ease-in-out infinite; }
+.agent-avatar-social_proof { animation: social-wave 2s ease-in-out infinite; }
+
 .gauge-bar {
   transition: width 0.5s ease-out, background-color 0.5s ease-out;
 }
@@ -56,4 +135,91 @@ body {
 .debate-layout {
   height: calc(100vh - 400px);
   min-height: 500px;
+}
+
+/* === 考え中（Thinking）アニメーション === */
+
+/* エージェント登場アニメーション */
+@keyframes thinkingEnter {
+  from {
+    opacity: 0;
+    transform: translateY(12px) scale(0.95);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+.thinking-agent-enter {
+  animation: thinkingEnter 0.5s ease-out forwards;
+}
+
+/* 考え中ドットアニメーション */
+@keyframes thinkingDot {
+  0%, 80%, 100% {
+    opacity: 0.3;
+    transform: scale(0.8);
+  }
+  40% {
+    opacity: 1;
+    transform: scale(1.2);
+  }
+}
+
+.thinking-dot {
+  animation: thinkingDot 1.4s ease-in-out infinite;
+}
+
+/* コメント切り替えフェード */
+@keyframes commentFade {
+  0% {
+    opacity: 0;
+    transform: translateY(4px);
+  }
+  15% {
+    opacity: 1;
+    transform: translateY(0);
+  }
+  85% {
+    opacity: 1;
+    transform: translateY(0);
+  }
+  100% {
+    opacity: 0.7;
+    transform: translateY(0);
+  }
+}
+
+.thinking-comment-fade {
+  animation: commentFade 3s ease-in-out;
+}
+
+/* ヘッダーパルス */
+@keyframes headerPulse {
+  0%, 100% {
+    box-shadow: 0 0 0 0 rgba(99, 102, 241, 0.4);
+  }
+  50% {
+    box-shadow: 0 0 0 8px rgba(99, 102, 241, 0);
+  }
+}
+
+.thinking-header-pulse {
+  animation: headerPulse 2s ease-in-out infinite;
+}
+
+/* アバター考え中の強調 */
+.thinking-avatar {
+  box-shadow: 0 0 0 0 rgba(99, 102, 241, 0.3);
+  animation: thinkingAvatarGlow 2s ease-in-out infinite;
+}
+
+@keyframes thinkingAvatarGlow {
+  0%, 100% {
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 0 0 0 rgba(99, 102, 241, 0.0);
+  }
+  50% {
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 0 0 4px rgba(99, 102, 241, 0.15);
+  }
 }

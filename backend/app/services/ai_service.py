@@ -29,11 +29,11 @@ class AIServiceBase(ABC):
             turn_id: ターン番号
             product_url: 商品URL
             user_query: ユーザーの悩み・質問
-            selected_agents: 議論に参加するエージェントのロール一覧（オプション）
+            selected_agents: 参加エージェントのロールリスト（オプション）
             user_intervention: ユーザーからの議論への介入（オプション）
             history: これまでの議論履歴（オプション）
         
         Returns:
-            DebateTurn: 3人のエージェントの発言 + AI審判の判定
+            DebateTurn: エージェントの発言 + AI審判の判定
         """
         ...

@@ -24,6 +24,20 @@ class Settings:
     PORT: int = int(os.getenv("PORT", "8000"))
     DEBUG: bool = os.getenv("DEBUG", "False").lower() in ("true", "1", "yes")
 
+    # CORS設定（カンマ区切りで複数指定可）
+    ALLOWED_ORIGINS: list[str] = [
+        origin.strip()
+        for origin in os.getenv("ALLOWED_ORIGINS", "http://localhost:3000").split(",")
+        if origin.strip()
+    ]
+
+    # Firestore設定
+    FIRESTORE_ENABLED: bool = os.getenv("FIRESTORE_ENABLED", "False").lower() in ("true", "1", "yes")
+    FIRESTORE_COLLECTION: str = os.getenv("FIRESTORE_COLLECTION", "debates")
+
+    # 静的ファイル配信設定
+    STATIC_FILES_DIR: str = os.getenv("STATIC_FILES_DIR", "")
+
 
 # グローバル設定インスタンス
 settings = Settings()
