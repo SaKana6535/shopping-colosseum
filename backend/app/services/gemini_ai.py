@@ -35,7 +35,11 @@ DEBATE_RESPONSE_SCHEMA = {
                     "agent_name": {"type": "string"},
                     "role": {
                         "type": "string",
-                        "enum": ["logical", "emotional", "critical"],
+                        "enum": [
+                            "logical", "emotional", "critical",
+                            "cost_conscious", "eco_friendly", "aesthetic",
+                            "practical", "data_driven", "trendy", "social_proof",
+                        ],
                     },
                     "content": {"type": "string"},
                 },
@@ -49,7 +53,7 @@ DEBATE_RESPONSE_SCHEMA = {
 JUDGE_RESPONSE_SCHEMA = {
     "type": "object",
     "properties": {
-        "score": {"type": "integer"},
+        "score": {"type": "integer", "minimum": 0, "maximum": 100},
         "reason": {"type": "string"},
     },
     "required": ["score", "reason"],
@@ -163,7 +167,7 @@ def _build_system_instruction(selected_agents: List[str]) -> str:
 DEBATE_SYSTEM_INSTRUCTION = _build_system_instruction(DEFAULT_AGENTS)
 
 JUDGE_SYSTEM_INSTRUCTION = """\
-あなたは公正な裁判官です。AIエージェントたちの商品購入に関する議論を読み、購買意欲がどの程度高まったかを判定してください。
+あなたは公正な裁判官です。AIエージェントたちの商品購入に関する議論を読み、購入推奨度を総合的に判定してください。
 
 ## スコアリング基準
 - 0: 絶対に買うべきではない
@@ -172,9 +176,19 @@ JUDGE_SYSTEM_INSTRUCTION = """\
 - 75: 購入を前向きに検討すべき
 - 100: 絶対に買うべき
 
+## 評価観点
+以下の観点を総合的に考慮してスコアを決定すること：
+1. **コストパフォーマンス**: 価格に見合う価値があるか
+2. **品質・信頼性**: 製品の品質やブランドの信頼性は十分か
+3. **リスク**: 購入に伴う懸念やリスクはどの程度か
+4. **ユーザーニーズ合致度**: ユーザーの悩みや要望に合った製品か
+
 ## ルール
 - **必ず日本語で回答すること（英語での回答は禁止）**
-- 個別のエージェントではなく、議論全体の「場の空気感」を判定すること
+- 個別のエージェントの意見ではなく、議論全体を総合的に評価すること
+- 商品リサーチ情報が提供されている場合、エージェントの主張の正確性も考慮すること
+- 過去のターンのスコアが提供されている場合、議論の進展に応じて一貫性のあるスコア変動を心がけること（根拠のない急激な変動は避ける）
+- ユーザーからの介入・指示がある場合、その意図を尊重してスコアに反映すること
 - スコアは0〜100の整数で出力すること
 - 判定理由は1〜2文で簡潔にまとめること
 """
@@ -276,11 +290,17 @@ class GeminiAIService(AIServiceBase):
             generation_config=self.debate_generation_config,
         )
 
-        debate_messages = self._parse_debate_response(debate_response)
+        debate_messages = self._parse_debate_response(
+            debate_response, selected_agents=selected_agents,
+        )
 
         # 2. 審判を生成
         judge_prompt = self._build_judge_prompt(
-            debate_messages, product_url, user_query
+            debate_messages, product_url, user_query,
+            history=history,
+            product_info=product_info,
+            user_intervention=user_intervention,
+            selected_agents=selected_agents,
         )
 
         logger.debug(f"Judge prompt (turn {turn_id}):\n{judge_prompt}")
@@ -428,19 +448,70 @@ class GeminiAIService(AIServiceBase):
         debate_messages: List[AgentMessage],
         product_url: str,
         user_query: str,
+        history: Optional[List[dict]] = None,
+        product_info: Optional[str] = None,
+        user_intervention: Optional[str] = None,
+        selected_agents: Optional[List[str]] = None,
     ) -> str:
         """審判用のユーザープロンプトを構築する"""
         parts: list[str] = []
 
         parts.append(f"## 商品情報\n- URL: {product_url}")
+
+        # 商品リサーチ情報（エージェントの主張の妥当性検証用）
+        if product_info:
+            parts.append(
+                f"## 検索で得られた商品の詳細情報\n"
+                f"以下はGoogle検索で収集したリアルタイムの商品情報です。"
+                f"エージェントの主張がこの情報と一致しているかも考慮してください。"
+                f"\n\n{product_info}"
+            )
+
         parts.append(f"## ユーザーの悩み\n{user_query}")
+
+        # 参加エージェントの情報
+        if selected_agents:
+            agent_labels = []
+            for role in selected_agents:
+                agent = AGENT_DEFINITIONS.get(role)
+                if agent:
+                    agent_labels.append(f"{agent['name']}（{agent['label']}）")
+            parts.append(
+                f"## 参加エージェント\n"
+                f"{len(agent_labels)}人が議論に参加: {', '.join(agent_labels)}"
+            )
+
+        # 過去の議論履歴とスコア推移
+        if history:
+            parts.append("## これまでの議論とスコア推移")
+            for past_turn in history:
+                turn_id = past_turn["turn_id"]
+                judge = past_turn.get("judge", {})
+                past_score = judge.get("score", "N/A")
+                past_reason = judge.get("reason", "")
+                parts.append(f"### ターン {turn_id}（スコア: {past_score}）")
+                for msg in past_turn.get("debate", []):
+                    parts.append(
+                        f"- **{msg['agent_name']}**: {msg['content']}"
+                    )
+                if past_reason:
+                    parts.append(f"審判: {past_score}点 - {past_reason}")
+
+        # ユーザー介入の情報
+        if user_intervention:
+            parts.append(
+                f"## ユーザーからの介入\n"
+                f"ユーザーは「{user_intervention}」という指示を出しています。"
+                f"この意図をスコアに反映してください。"
+            )
+
         parts.append("## 今回の議論内容")
 
         for msg in debate_messages:
             parts.append(f"- **{msg.agent_name}** ({msg.role}): {msg.content}")
 
         parts.append(
-            "上記の議論を踏まえて、購入推奨度をJSON形式で判定してください。"
+            "上記の情報をすべて踏まえて、購入推奨度をJSON形式で判定してください。"
             "**判定理由は必ず日本語で出力してください。英語での回答は禁止です。**"
         )
 
@@ -448,8 +519,15 @@ class GeminiAIService(AIServiceBase):
 
     # --- レスポンスパース ---
 
-    def _parse_debate_response(self, response) -> List[AgentMessage]:
+    def _parse_debate_response(
+        self, response, selected_agents: Optional[List[str]] = None,
+    ) -> List[AgentMessage]:
         """Geminiの議論レスポンスをパースしてAgentMessageリストに変換する"""
+        if selected_agents is None:
+            selected_agents = DEFAULT_AGENTS
+
+        expected_count = len(selected_agents)
+
         try:
             data = json.loads(response.text)
 
@@ -463,46 +541,43 @@ class GeminiAIService(AIServiceBase):
                     )
                 )
 
-            # 3人分揃っていない場合はフォールバックで補完
-            if len(messages) != 3:
+            # 期待数に満たない場合はフォールバックで補完
+            if len(messages) != expected_count:
                 logger.warning(
-                    f"Expected 3 agent messages, got {len(messages)}. "
+                    f"Expected {expected_count} agent messages, got {len(messages)}. "
                     "Filling missing agents with defaults."
                 )
                 existing_roles = {m.role for m in messages}
-                defaults = {
-                    "logical": ("Mr. Logic", "分析中ですが、情報が不足しています。"),
-                    "emotional": ("Ms. Emotion", "もう少し情報が欲しいです。"),
-                    "critical": ("Dr. Risk", "判断を保留します。追加情報が必要です。"),
-                }
-                for role, (name, content) in defaults.items():
+                for role in selected_agents:
                     if role not in existing_roles:
-                        messages.append(
-                            AgentMessage(agent_name=name, role=role, content=content)
-                        )
+                        agent = AGENT_DEFINITIONS.get(role)
+                        if agent:
+                            messages.append(
+                                AgentMessage(
+                                    agent_name=agent["name"],
+                                    role=role,
+                                    content="判断を保留します。追加情報が必要です。",
+                                )
+                            )
 
             return messages
 
         except (json.JSONDecodeError, KeyError, TypeError) as e:
             logger.error(f"Failed to parse debate response: {e}")
             logger.error(f"Raw response: {response.text}")
-            return [
-                AgentMessage(
-                    agent_name="Mr. Logic",
-                    role="logical",
-                    content="議論の生成中にエラーが発生しました。再度お試しください。",
-                ),
-                AgentMessage(
-                    agent_name="Ms. Emotion",
-                    role="emotional",
-                    content="うまく議論できませんでした。もう一度試してみましょう。",
-                ),
-                AgentMessage(
-                    agent_name="Dr. Risk",
-                    role="critical",
-                    content="技術的な問題が発生しています。しばらくお待ちください。",
-                ),
-            ]
+            # 選択されたエージェントに基づいてエラー用フォールバックを生成
+            fallback_messages = []
+            for role in selected_agents:
+                agent = AGENT_DEFINITIONS.get(role)
+                if agent:
+                    fallback_messages.append(
+                        AgentMessage(
+                            agent_name=agent["name"],
+                            role=role,
+                            content="議論の生成中にエラーが発生しました。再度お試しください。",
+                        )
+                    )
+            return fallback_messages
 
     def _parse_judge_response(self, response) -> JudgeResult:
         """Geminiの審判レスポンスをパースしてJudgeResultに変換する"""

@@ -1,4 +1,4 @@
-from pydantic import BaseModel
+from pydantic import BaseModel, Field
 from typing import List, Literal, Optional
 from datetime import datetime
 
@@ -12,7 +12,7 @@ class AgentMessage(BaseModel):
 
 class JudgeResult(BaseModel):
     """AI審判の判定結果"""
-    score: int  # 0-100
+    score: int = Field(ge=0, le=100, description="購入推奨度（0〜100）")
     reason: str
 
 
