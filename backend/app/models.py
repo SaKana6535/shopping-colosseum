@@ -10,7 +10,7 @@ AgentRole = Literal[
 ]
 
 # 議論モード型
-DebateMode = Literal['battle', 'review']
+DebateMode = Literal['discussion', 'review']
 
 
 class AgentMessage(BaseModel):
@@ -38,7 +38,7 @@ class StartDebateRequest(BaseModel):
     product_url: str
     user_query: str
     selected_agents: List[AgentRole] = ['logical', 'emotional', 'critical']
-    debate_mode: DebateMode = 'battle'
+    debate_mode: DebateMode = 'discussion'
 
     @field_validator('selected_agents')
     @classmethod

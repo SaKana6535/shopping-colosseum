@@ -39,34 +39,34 @@ export default function AgentSelector({
       {/* モード切り替え */}
       <div className="mb-4">
         <div className="flex items-center gap-2 mb-2">
-          <span className="text-xl">&#9876;&#65039;</span>
+          <span className="text-xl">&#128172;</span>
           <h3 className="text-base font-bold text-slate-900 dark:text-white">
             議論モード
           </h3>
         </div>
         <div className="grid grid-cols-2 gap-2">
           <button
-            onClick={() => onDebateModeChange('battle')}
+            onClick={() => onDebateModeChange('discussion')}
             className={`
               relative p-3 rounded-lg border-2 text-left transition-all
-              ${debateMode === 'battle'
-                ? 'bg-red-50 dark:bg-red-900/20 border-red-500 dark:border-red-600 shadow-md'
+              ${debateMode === 'discussion'
+                ? 'bg-blue-50 dark:bg-blue-900/20 border-blue-500 dark:border-blue-600 shadow-md'
                 : 'bg-white dark:bg-slate-800 border-slate-200 dark:border-slate-700 hover:border-slate-300 dark:hover:border-slate-600'
               }
               cursor-pointer hover:scale-[1.02]
             `}
           >
             <div className="flex items-center gap-2 mb-1">
-              <span className="text-lg">&#9876;&#65039;</span>
-              <span className={`font-bold text-sm ${debateMode === 'battle' ? 'text-red-700 dark:text-red-300' : 'text-slate-700 dark:text-slate-300'}`}>
-                バトルモード
+              <span className="text-lg">&#128172;</span>
+              <span className={`font-bold text-sm ${debateMode === 'discussion' ? 'text-blue-700 dark:text-blue-300' : 'text-slate-700 dark:text-slate-300'}`}>
+                ディスカッションモード
               </span>
             </div>
-            <p className={`text-[10px] leading-tight ${debateMode === 'battle' ? 'text-red-600 dark:text-red-400' : 'text-slate-500 dark:text-slate-400'}`}>
-              互いに反論・同意し合う白熱議論
+            <p className={`text-[10px] leading-tight ${debateMode === 'discussion' ? 'text-blue-600 dark:text-blue-400' : 'text-slate-500 dark:text-slate-400'}`}>
+              互いに反論・同意し合うディスカッション
             </p>
-            {debateMode === 'battle' && (
-              <div className="absolute top-1.5 right-1.5 w-4 h-4 bg-red-500 rounded-full flex items-center justify-center">
+            {debateMode === 'discussion' && (
+              <div className="absolute top-1.5 right-1.5 w-4 h-4 bg-blue-500 rounded-full flex items-center justify-center">
                 <span className="text-white text-[10px] font-bold">&#10003;</span>
               </div>
             )}

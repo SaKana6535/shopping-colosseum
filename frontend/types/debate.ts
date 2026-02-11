@@ -16,7 +16,7 @@ export type AgentRole =
   | 'social_proof';
 
 // 議論モード
-export type DebateMode = 'battle' | 'review';
+export type DebateMode = 'discussion' | 'review';
 
 export interface AgentMessage {
   agent_name: string;

@@ -15,7 +15,7 @@ class DebateSession:
     """議論セッションのデータクラス"""
     def __init__(self, session_id: str, product_url: str, user_query: str,
                  selected_agents: Optional[List[str]] = None,
-                 debate_mode: str = "battle"):
+                 debate_mode: str = "discussion"):
         self.session_id = session_id
         self.product_url = product_url
         self.user_query = user_query
@@ -55,7 +55,7 @@ class DebateSession:
             product_url=data["product_url"],
             user_query=data["user_query"],
             selected_agents=data.get("selected_agents"),
-            debate_mode=data.get("debate_mode", "battle"),
+            debate_mode=data.get("debate_mode", "discussion"),
         )
         session.current_turn = data.get("current_turn", 0)
         session.history = data.get("history", [])
@@ -69,7 +69,7 @@ class SessionManagerBase(ABC):
     @abstractmethod
     def create_session(self, product_url: str, user_query: str,
                        selected_agents: Optional[List[str]] = None,
-                       debate_mode: str = "battle") -> DebateSession:
+                       debate_mode: str = "discussion") -> DebateSession:
         """新規セッションを作成"""
         ...
 
@@ -97,7 +97,7 @@ class InMemorySessionManager(SessionManagerBase):
 
     def create_session(self, product_url: str, user_query: str,
                        selected_agents: Optional[List[str]] = None,
-                       debate_mode: str = "battle") -> DebateSession:
+                       debate_mode: str = "discussion") -> DebateSession:
         """新規セッションを作成"""
         session_id = str(uuid.uuid4())
         session = DebateSession(
@@ -129,7 +129,7 @@ class FirestoreSessionManager(SessionManagerBase):
 
     def create_session(self, product_url: str, user_query: str,
                        selected_agents: Optional[List[str]] = None,
-                       debate_mode: str = "battle") -> DebateSession:
+                       debate_mode: str = "discussion") -> DebateSession:
         """新規セッションを作成してFirestoreに保存"""
         from . import firestore_service
 

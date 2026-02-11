@@ -21,7 +21,7 @@ export async function startDebate(
   productUrl: string,
   userQuery: string,
   selectedAgents: string[] = ['logical', 'emotional', 'critical'],
-  debateMode: DebateMode = 'battle',
+  debateMode: DebateMode = 'discussion',
 ): Promise<StartDebateResponse> {
   const response = await fetch(`${API_BASE_URL}/api/debate/start`, {
     method: 'POST',

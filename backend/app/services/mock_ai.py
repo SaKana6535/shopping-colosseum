@@ -17,7 +17,7 @@ AGENT_CONFIGS = {
             '技術仕様を確認したところ、最新の規格に対応しており、将来性も高いと判断できます。',
             '数値データに基づけば、この製品は合理的な選択肢と言えるでしょう。',
         ],
-        "battle_templates": [
+        "discussion_templates": [
             '{target}の意見も理解できますが、スペック面のデータを見ると、この価格帯では明確な優位性があります。',
             '{target}が指摘した点は感情論です。客観的なベンチマークスコアで判断すべきでしょう。',
             '{target}の懸念には一理ありますが、数値データに基づけば、リスクは許容範囲内です。',
@@ -31,7 +31,7 @@ AGENT_CONFIGS = {
             'このカラーバリエーション、私の好みじゃないかも...もっとスタイリッシュなのがいいな。',
             '見た目も大事！気分が上がる製品を選びたいです。',
         ],
-        "battle_templates": [
+        "discussion_templates": [
             '{target}はデータばかり見てるけど、毎日使うものだからワクワク感も大事じゃない？',
             '{target}の分析は正しいかもしれないけど、心が躍らない製品を買っても後悔しそう。',
             '{target}、リスクばかり気にしてたら何も買えないよ！直感を信じることも大切！',
@@ -45,7 +45,7 @@ AGENT_CONFIGS = {
             'サポート体制について調べましたが、ユーザーからの評価が芳しくありません。',
             '価格が安いのには理由があるかもしれません。慎重に検討すべきです。',
         ],
-        "battle_templates": [
+        "discussion_templates": [
             '{target}の楽観的な見方には賛同しかねます。レビューを見ると、耐久性に懸念があります。',
             '{target}が言うほど完璧ではありません。保証期間の短さは重大なリスクです。',
             '{target}の指摘した利点は認めますが、長期的なリスクを無視すべきではありません。',
@@ -59,7 +59,7 @@ AGENT_CONFIGS = {
             '長期的なコストも考慮しましょう。初期投資だけでなく、維持費や消耗品代も重要です。',
             'セールを待てば、もっとお得に買えるかもしれません。急いで買う必要はありますか？',
         ],
-        "battle_templates": [
+        "discussion_templates": [
             '{target}はデザインを重視していますが、同等のデザインで半額の製品もありますよ。',
             '{target}の言うスペックは魅力的ですが、コスパで考えると他に良い選択肢があります。',
             '{target}、その機能に本当にこの値段の価値がありますか？冷静に計算してみましょう。',
@@ -73,7 +73,7 @@ AGENT_CONFIGS = {
             '製造過程や素材の環境負荷も考慮すべきです。リサイクル素材を使った製品もありますよ。',
             '長く使える耐久性があれば、結果的に環境にも優しい選択になります。',
         ],
-        "battle_templates": [
+        "discussion_templates": [
             '{target}はコスパを重視していますが、環境コストも含めて考えるべきではないでしょうか。',
             '{target}の意見も分かりますが、サステナビリティの観点が欠けています。',
             '{target}、長く使えるかどうかは環境にも直結します。耐久性も含めて考えましょう。',
@@ -87,7 +87,7 @@ AGENT_CONFIGS = {
             '美的価値も重要な判断基準です。毎日目にするものだからこそ、心地よいデザインを。',
             '質感や細部のディテールまでこだわりを感じます。デザインで選ぶのもありですね。',
         ],
-        "battle_templates": [
+        "discussion_templates": [
             '{target}はスペック重視ですが、このフォルムの美しさも立派な価値ですよ。',
             '{target}の指摘するリスクは理解しますが、デザインの完成度はそれを補って余りあります。',
             '{target}、コスパだけで選んでデザインに妥協したら、毎日の満足度が下がりませんか？',
@@ -101,7 +101,7 @@ AGENT_CONFIGS = {
             '日常的な使用シーンを想像してみてください。本当に便利に使えそうですか？',
             '実用性を最優先に考えると、もっとシンプルで使いやすい製品があるかもしれません。',
         ],
-        "battle_templates": [
+        "discussion_templates": [
             '{target}はデザインを褒めていますが、実際に毎日使うとなると使い勝手の方が重要です。',
             '{target}の言うデータは参考になりますが、実際の使用感はまた別の話ですよ。',
             '{target}、トレンドに流されず、実際の使用シーンで考えてみませんか？',
@@ -115,7 +115,7 @@ AGENT_CONFIGS = {
             '過去6ヶ月の価格推移を見ると、今が買い時とは言えない状況です。',
             'ユーザーレビューの感情分析では、ポジティブな意見が65%を占めています。',
         ],
-        "battle_templates": [
+        "discussion_templates": [
             '{target}の主観的な評価は分かりますが、データで見ると満足度は平均78%です。',
             '{target}が懸念するリスクについて、統計的には故障率は業界平均以下です。',
             '{target}の感覚的な評価を数値化すると、実はそこまで悪くないデータが出ています。',
@@ -129,7 +129,7 @@ AGENT_CONFIGS = {
             '流行の観点から見ると、少し古いデザインかもしれません。',
             'インフルエンサーたちも注目しているので、今が買い時かもしれませんね。',
         ],
-        "battle_templates": [
+        "discussion_templates": [
             '{target}はスペック重視ですが、今のトレンドを考えると、もっと人気のモデルがありますよ。',
             '{target}、SNSでの話題性も考慮すべきです。この製品、結構バズってます！',
             '{target}の慎重な姿勢は分かりますが、流行に乗り遅れるリスクもありますよ？',
@@ -143,7 +143,7 @@ AGENT_CONFIGS = {
             '実際のユーザー体験から学べることが多いです。レビューを詳しく確認しましょう。',
             '評価が高い製品ですが、一部で不満の声もあるので注意が必要です。',
         ],
-        "battle_templates": [
+        "discussion_templates": [
             '{target}のデータ分析は参考になりますが、実際の購入者の声も聞いてみましょう。',
             '{target}が心配するリスクについて、口コミでは「問題なし」との声が多数です。',
             '{target}の理論は分かりますが、実際に使った人の体験談の方が参考になりますよ。',
@@ -163,7 +163,7 @@ class MockAIService(AIServiceBase):
         selected_agents: Optional[List[str]] = None,
         user_intervention: Optional[str] = None,
         history: Optional[List[dict]] = None,
-        debate_mode: str = "battle",
+        debate_mode: str = "discussion",
     ) -> DebateTurn:
         """議論を生成（モック）"""
 
@@ -178,16 +178,16 @@ class MockAIService(AIServiceBase):
             if not config:
                 continue
 
-            # バトルモードかつターン2以降は他エージェントに言及
-            if debate_mode == "battle" and turn_id > 1 and len(selected_agents) > 1:
+            # ディスカッションモードかつターン2以降は他エージェントに言及
+            if debate_mode == "discussion" and turn_id > 1 and len(selected_agents) > 1:
                 # 自分以外のエージェントからランダムに1人選ぶ
                 other_agents = [r for r in selected_agents if r != role]
                 target_role = random.choice(other_agents)
                 target_config = AGENT_CONFIGS.get(target_role)
                 target_name = target_config["name"] if target_config else "他のエージェント"
 
-                battle_templates = config.get("battle_templates", config["templates"])
-                template = random.choice(battle_templates)
+                discussion_templates = config.get("discussion_templates", config["templates"])
+                template = random.choice(discussion_templates)
                 content = template.format(target=target_name)
             else:
                 content = random.choice(config['templates'])

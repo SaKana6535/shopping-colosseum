@@ -21,7 +21,7 @@ export default function Home() {
   const [isPreparing, setIsPreparing] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [selectedAgents, setSelectedAgents] = useState<AgentRole[]>([...DEFAULT_AGENTS]);
-  const [debateMode, setDebateMode] = useState<DebateMode>('battle');
+  const [debateMode, setDebateMode] = useState<DebateMode>('discussion');
   const [productUrl, setProductUrl] = useState('');
   const [userQuery, setUserQuery] = useState('');
   const [showResultModal, setShowResultModal] = useState(false);
@@ -88,7 +88,7 @@ export default function Home() {
     setIsPreparing(false);
     setError(null);
     setSelectedAgents([...DEFAULT_AGENTS]);
-    setDebateMode('battle');
+    setDebateMode('discussion');
     setProductUrl('');
     setUserQuery('');
   };
@@ -188,11 +188,11 @@ export default function Home() {
                   </p>
                   {!isPreparing && (
                     <span className={`inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-xs font-bold ${
-                      debateMode === 'battle'
-                        ? 'bg-red-100 text-red-700 dark:bg-red-900/30 dark:text-red-300'
+                      debateMode === 'discussion'
+                        ? 'bg-blue-100 text-blue-700 dark:bg-blue-900/30 dark:text-blue-300'
                         : 'bg-emerald-100 text-emerald-700 dark:bg-emerald-900/30 dark:text-emerald-300'
                     }`}>
-                      {debateMode === 'battle' ? '⚔️ バトル' : '📝 レビュー'}
+                      {debateMode === 'discussion' ? '💬 ディスカッション' : '📝 レビュー'}
                     </span>
                   )}
                 </div>

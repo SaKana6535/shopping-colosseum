@@ -193,12 +193,12 @@ MAX_FULL_HISTORY_TURNS = 3
 
 def _build_system_instruction(
     selected_agents: List[str],
-    debate_mode: str = "battle",
+    debate_mode: str = "discussion",
 ) -> str:
     """選択されたエージェントとモードに基づいてシステムプロンプトを動的に構築する"""
     agent_count = len(selected_agents)
 
-    if debate_mode == "battle":
+    if debate_mode == "discussion":
         intro = (
             f"あなたは{agent_count}人の異なる人格を演じ分けるAIです。"
             f"商品の購入について、{agent_count}つの視点から白熱したディベートを行ってください。"
@@ -228,9 +228,9 @@ def _build_system_instruction(
     parts.append("")
 
     # モード別ルール
-    if debate_mode == "battle":
+    if debate_mode == "discussion":
         parts.append(
-            "## ルール（バトルモード）\n"
+            "## ルール（ディスカッションモード）\n"
             "- **必ず日本語で回答すること（英語での回答は禁止）**\n"
             "- 他のエージェントの発言に対して、自分の視点から反論・同意・補足すること\n"
             "- ターン2以降は必ず他エージェントの名前を挙げて、その意見に言及すること\n"
@@ -360,7 +360,7 @@ class GeminiAIService(AIServiceBase):
         selected_agents: Optional[List[str]] = None,
         user_intervention: Optional[str] = None,
         history: Optional[List[dict]] = None,
-        debate_mode: str = "battle",
+        debate_mode: str = "discussion",
     ) -> DebateTurn:
         """Gemini APIで1ターン分の議論を生成する
 
@@ -425,7 +425,7 @@ class GeminiAIService(AIServiceBase):
     # --- モデル構築ヘルパー ---
 
     def _get_debate_model(
-        self, selected_agents: List[str], debate_mode: str = "battle",
+        self, selected_agents: List[str], debate_mode: str = "discussion",
     ) -> GenerativeModel:
         """選択されたエージェントとモードに合わせた議論生成用モデルを返す（キャッシュ付き）"""
         cache_key = (tuple(sorted(selected_agents)), debate_mode)
@@ -530,7 +530,7 @@ class GeminiAIService(AIServiceBase):
         history: Optional[List[dict]] = None,
         product_info: Optional[str] = None,
         selected_agents: Optional[List[str]] = None,
-        debate_mode: str = "battle",
+        debate_mode: str = "discussion",
     ) -> str:
         """議論生成用のユーザープロンプトを構築する"""
         parts: list[str] = []
@@ -587,7 +587,7 @@ class GeminiAIService(AIServiceBase):
 
         agent_count = len(selected_agents) if selected_agents else 3
 
-        if debate_mode == "battle" and turn_id > 1:
+        if debate_mode == "discussion" and turn_id > 1:
             parts.append(
                 f"上記の情報を踏まえて、{agent_count}人のエージェントによるディベートをJSON形式で生成してください。"
                 f"**他のエージェントの意見に必ず言及し、反論・同意・補足してください。**"
