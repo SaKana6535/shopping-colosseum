@@ -1,22 +1,19 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import TurnHistorySidebar from './TurnHistorySidebar';
-import CurrentTurnView from './CurrentTurnView';
-import JudgeGauge from './JudgeGauge';
-import InputForm from './InputForm';
+import { useSearchParams, useRouter } from 'next/navigation';
+import TurnHistorySidebar from '@/components/TurnHistorySidebar';
+import CurrentTurnView from '@/components/CurrentTurnView';
+import JudgeGauge from '@/components/JudgeGauge';
+import InputForm from '@/components/InputForm';
 import { fetchDebateLogDetail, getNextTurn } from '@/lib/api';
 import { DebateLogDetail } from '@/types/debate';
 
-interface DebateLogDetailViewProps {
-  sessionId: string;
-  onClose: () => void;
-}
+export default function DebateDetailPage() {
+  const searchParams = useSearchParams();
+  const router = useRouter();
+  const sessionId = searchParams.get('id');
 
-export default function DebateLogDetailView({
-  sessionId,
-  onClose,
-}: DebateLogDetailViewProps) {
   const [detail, setDetail] = useState<DebateLogDetail | null>(null);
   const [selectedTurnId, setSelectedTurnId] = useState<number | null>(null);
   const [isLoading, setIsLoading] = useState(true);
@@ -24,7 +21,7 @@ export default function DebateLogDetailView({
   const [error, setError] = useState<string | null>(null);
 
   const handleNextTurn = async (intervention?: string) => {
-    if (!detail) return;
+    if (!detail || !sessionId) return;
     setIsAddingTurn(true);
     setError(null);
     try {
@@ -45,14 +42,24 @@ export default function DebateLogDetailView({
     }
   };
 
+  const handleEnd = () => {
+    router.push('/');
+  };
+
   useEffect(() => {
+    if (!sessionId) {
+      setIsLoading(false);
+      setError('議論IDが指定されていません');
+      return;
+    }
+
     let cancelled = false;
 
     async function load() {
       setIsLoading(true);
       setError(null);
       try {
-        const data = await fetchDebateLogDetail(sessionId);
+        const data = await fetchDebateLogDetail(sessionId!);
         if (!cancelled) {
           setDetail(data);
           const lastTurnId =
@@ -92,20 +99,6 @@ export default function DebateLogDetailView({
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-50 via-blue-50/30 to-purple-50/30 dark:from-slate-900 dark:via-slate-900 dark:to-slate-900">
       <div className="container mx-auto px-4 py-8 max-w-7xl">
-        {/* ヘッダー */}
-        <div className="flex items-center justify-between mb-6">
-          <h1 className="text-2xl font-bold text-slate-900 dark:text-white">
-            過去の議論
-          </h1>
-          <button
-            type="button"
-            onClick={onClose}
-            className="px-4 py-2 rounded-lg bg-slate-200 dark:bg-slate-700 text-slate-900 dark:text-white hover:bg-slate-300 dark:hover:bg-slate-600 transition-colors"
-          >
-            閉じる
-          </button>
-        </div>
-
         {isLoading && (
           <div className="flex flex-col items-center justify-center py-20">
             <div className="animate-spin rounded-full h-16 w-16 border-4 border-slate-200 dark:border-slate-700 border-t-blue-500" />
@@ -120,10 +113,10 @@ export default function DebateLogDetailView({
             <p className="text-red-800 dark:text-red-200 mb-4">{error}</p>
             <button
               type="button"
-              onClick={onClose}
-              className="px-4 py-2 rounded-lg bg-slate-200 dark:bg-slate-700 text-slate-900 dark:text-white"
+              onClick={() => router.push('/')}
+              className="px-4 py-2 rounded-lg bg-slate-200 dark:bg-slate-700 text-slate-900 dark:text-white hover:bg-slate-300 dark:hover:bg-slate-600 transition-colors"
             >
-              閉じる
+              トップに戻る
             </button>
           </div>
         )}
@@ -166,7 +159,7 @@ export default function DebateLogDetailView({
             {/* 続きから議論 */}
             <InputForm
               onSubmit={handleNextTurn}
-              onEnd={onClose}
+              onEnd={handleEnd}
               currentTurn={detail.current_turn}
               maxTurns={10}
               isLoading={isAddingTurn}

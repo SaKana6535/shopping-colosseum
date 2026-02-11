@@ -1,10 +1,11 @@
 'use client';
 
+import Link from 'next/link';
+import { usePathname, useSearchParams } from 'next/navigation';
 import { DebateLogSummary } from '@/types/debate';
 
 interface DebateLogCardProps {
   log: DebateLogSummary;
-  onSelect: (sessionId: string) => void;
 }
 
 function formatDate(value?: string): string {
@@ -37,25 +38,39 @@ function getDisplayTitle(log: DebateLogSummary): string {
   return log.title?.trim() || log.user_query?.trim() || '新しい議論';
 }
 
-export default function DebateLogCard({ log, onSelect }: DebateLogCardProps) {
+export default function DebateLogCard({ log }: DebateLogCardProps) {
+  const pathname = usePathname();
+  const searchParams = useSearchParams();
+  const isActive = pathname === '/debate' && searchParams.get('id') === log.session_id;
   const title = getDisplayTitle(log);
   const dateStr = formatDate(log.created_at);
 
   return (
-    <button
-      type="button"
-      onClick={() => onSelect(log.session_id)}
-      className="w-full text-left px-4 py-3 rounded-xl hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors group"
+    <Link
+      href={`/debate?id=${log.session_id}`}
+      className={`block w-full text-left px-4 py-3 rounded-xl transition-colors group ${
+        isActive
+          ? 'bg-blue-50 dark:bg-blue-900/20 border border-blue-200 dark:border-blue-800'
+          : 'hover:bg-slate-100 dark:hover:bg-slate-800'
+      }`}
     >
       <div className="flex items-start gap-3 min-w-0">
         {/* チャットアイコン */}
-        <div className="shrink-0 w-9 h-9 rounded-lg bg-gradient-to-br from-blue-500 to-purple-600 flex items-center justify-center text-white text-sm font-bold">
+        <div className={`shrink-0 w-9 h-9 rounded-lg flex items-center justify-center text-white text-sm font-bold ${
+          isActive
+            ? 'bg-gradient-to-br from-blue-600 to-purple-700'
+            : 'bg-gradient-to-br from-blue-500 to-purple-600'
+        }`}>
           💬
         </div>
 
         {/* タイトルと日時 */}
         <div className="flex-1 min-w-0">
-          <p className="text-sm font-medium text-slate-900 dark:text-white line-clamp-2 leading-snug group-hover:text-blue-600 dark:group-hover:text-blue-400 transition-colors">
+          <p className={`text-sm font-medium line-clamp-2 leading-snug transition-colors ${
+            isActive
+              ? 'text-blue-700 dark:text-blue-300'
+              : 'text-slate-900 dark:text-white group-hover:text-blue-600 dark:group-hover:text-blue-400'
+          }`}>
             {title}
           </p>
           <div className="flex items-center gap-2 mt-1">
@@ -70,6 +85,6 @@ export default function DebateLogCard({ log, onSelect }: DebateLogCardProps) {
           </div>
         </div>
       </div>
-    </button>
+    </Link>
   );
 }

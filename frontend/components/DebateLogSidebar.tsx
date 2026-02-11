@@ -1,20 +1,17 @@
 'use client';
 
 import { useState, useEffect } from 'react';
+import Link from 'next/link';
 import DebateLogCard from './DebateLogCard';
 import { fetchDebateLogs } from '@/lib/api';
 import { DebateLogSummary } from '@/types/debate';
 
 interface DebateLogSidebarProps {
   isOpen: boolean;
-  onClose: () => void;
-  onSelectLog: (sessionId: string) => void;
 }
 
 export default function DebateLogSidebar({
   isOpen,
-  onClose,
-  onSelectLog,
 }: DebateLogSidebarProps) {
   const [logs, setLogs] = useState<DebateLogSummary[]>([]);
   const [isLoading, setIsLoading] = useState(true);
@@ -33,7 +30,7 @@ export default function DebateLogSidebar({
         const message =
           err instanceof Error ? err.message : '読み込みに失敗しました';
         if (message === 'FIRESTORE_DISABLED') {
-          setError('過去の議論の閲覧にはFirestoreの設定が必要です');
+          setError('議論の閲覧にはFirestoreの設定が必要です');
         } else {
           setError(message);
         }
@@ -52,35 +49,28 @@ export default function DebateLogSidebar({
       }`}
     >
       <div className="flex flex-col h-full w-80">
-          {/* ヘッダー */}
-          <div className="flex items-center justify-between px-4 py-4 border-b border-slate-200 dark:border-slate-700 shrink-0">
-            <h2 className="text-lg font-bold text-slate-900 dark:text-white">
-              過去の議論
-            </h2>
-            <button
-              type="button"
-              onClick={onClose}
-              className="p-2 rounded-lg text-slate-600 dark:text-slate-400 hover:bg-slate-200 dark:hover:bg-slate-700 transition-colors"
-              aria-label="閉じる"
+          {/* 新しい議論ボタン */}
+          <div className="px-4 pt-4 pb-2 shrink-0">
+            <Link
+              href="/"
+              className="flex items-center justify-center gap-2 w-full px-4 py-3 rounded-xl bg-gradient-to-r from-blue-600 to-purple-600 text-white text-sm font-semibold hover:from-blue-700 hover:to-purple-700 transition-all shadow-md hover:shadow-lg"
             >
-              <svg
-                className="w-5 h-5"
-                fill="none"
-                stroke="currentColor"
-                viewBox="0 0 24 24"
-              >
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  strokeWidth={2}
-                  d="M6 18L18 6M6 6l12 12"
-                />
+              <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
               </svg>
-            </button>
+              新しい議論
+            </Link>
+          </div>
+
+          {/* ヘッダー */}
+          <div className="px-4 py-3 shrink-0">
+            <h2 className="text-xs font-semibold text-slate-500 dark:text-slate-400 uppercase tracking-wider">
+              あなたの議論
+            </h2>
           </div>
 
           {/* コンテンツ */}
-          <div className="flex-1 overflow-auto p-4">
+          <div className="flex-1 overflow-auto px-2 pb-4">
             {isLoading && (
               <div className="flex flex-col items-center justify-center py-12">
                 <div className="animate-spin rounded-full h-10 w-10 border-2 border-slate-200 dark:border-slate-700 border-t-blue-500" />
@@ -99,7 +89,7 @@ export default function DebateLogSidebar({
             {!isLoading && !error && logs.length === 0 && (
               <div className="rounded-xl bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 px-4 py-8 text-center">
                 <p className="text-sm text-slate-600 dark:text-slate-400">
-                  まだ過去の議論がありません
+                  まだ議論がありません
                 </p>
               </div>
             )}
@@ -110,7 +100,6 @@ export default function DebateLogSidebar({
                   <DebateLogCard
                     key={log.session_id}
                     log={log}
-                    onSelect={onSelectLog}
                   />
                 ))}
               </div>
