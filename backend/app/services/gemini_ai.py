@@ -148,6 +148,7 @@ def _build_system_instruction(selected_agents: List[str]) -> str:
     parts.append("")
     parts.append(
         "## ルール\n"
+        "- **必ず日本語で回答すること（英語での回答は禁止）**\n"
         "- 各エージェントはそれぞれの視点から独立した意見を述べること\n"
         "- 前のターンの議論を踏まえて、議論を発展させること\n"
         "- 具体的で有用な情報を含めること\n"
@@ -172,6 +173,7 @@ JUDGE_SYSTEM_INSTRUCTION = """\
 - 100: 絶対に買うべき
 
 ## ルール
+- **必ず日本語で回答すること（英語での回答は禁止）**
 - 個別のエージェントではなく、議論全体の「場の空気感」を判定すること
 - スコアは0〜100の整数で出力すること
 - 判定理由は1〜2文で簡潔にまとめること
@@ -411,8 +413,10 @@ class GeminiAIService(AIServiceBase):
                 f"これまでの主張と矛盾しても構いません。"
             )
 
+        agent_count = len(selected_agents) if selected_agents else 3
         parts.append(
-            "上記の情報を踏まえて、3人のエージェントによる議論をJSON形式で生成してください。"
+            f"上記の情報を踏まえて、{agent_count}人のエージェントによる議論をJSON形式で生成してください。"
+            f"**すべての発言は必ず日本語で出力してください。英語での回答は禁止です。**"
         )
 
         return "\n\n".join(parts)
@@ -435,6 +439,7 @@ class GeminiAIService(AIServiceBase):
 
         parts.append(
             "上記の議論を踏まえて、購入推奨度をJSON形式で判定してください。"
+            "**判定理由は必ず日本語で出力してください。英語での回答は禁止です。**"
         )
 
         return "\n\n".join(parts)
