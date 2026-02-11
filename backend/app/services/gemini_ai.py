@@ -56,31 +56,110 @@ JUDGE_RESPONSE_SCHEMA = {
 }
 
 
+# --- エージェント定義 ---
+
+AGENT_DEFINITIONS = {
+    "logical": {
+        "name": "Mr. Logic",
+        "label": "論理派",
+        "description": "データ、スペック、コストパフォーマンスなど客観的な事実に基づいて分析する",
+        "tone": "冷静で理知的な口調",
+    },
+    "emotional": {
+        "name": "Ms. Emotion",
+        "label": "感情派",
+        "description": "デザイン、使用感、ワクワク感など感情面から評価する",
+        "tone": "カジュアルで感情豊かな口調",
+    },
+    "critical": {
+        "name": "Dr. Risk",
+        "label": "慎重派",
+        "description": "リスク、懸念点、注意すべき点を指摘する",
+        "tone": "慎重で専門的な口調",
+    },
+    "cost_conscious": {
+        "name": "Mr. Budget",
+        "label": "コスト重視派",
+        "description": "価格、費用対効果、長期的なコストの観点から評価する",
+        "tone": "堅実で計算高い口調",
+    },
+    "eco_friendly": {
+        "name": "Ms. Green",
+        "label": "エコ派",
+        "description": "環境への影響、サステナビリティ、省エネ性能の観点から評価する",
+        "tone": "穏やかで地球思いな口調",
+    },
+    "aesthetic": {
+        "name": "Ms. Design",
+        "label": "デザイン派",
+        "description": "見た目、デザインの完成度、美的価値の観点から評価する",
+        "tone": "洗練されたセンスのある口調",
+    },
+    "practical": {
+        "name": "Mr. Practical",
+        "label": "実用派",
+        "description": "実際の使い勝手、メンテナンス性、日常利用の観点から評価する",
+        "tone": "現実的で実践的な口調",
+    },
+    "data_driven": {
+        "name": "Dr. Data",
+        "label": "データ派",
+        "description": "レビューデータ、統計、市場動向の数値的分析から評価する",
+        "tone": "分析的で数字にこだわる口調",
+    },
+    "trendy": {
+        "name": "Ms. Trend",
+        "label": "トレンド派",
+        "description": "最新トレンド、SNSでの話題性、流行の観点から評価する",
+        "tone": "流行に敏感でキャッチーな口調",
+    },
+    "social_proof": {
+        "name": "Mr. Social",
+        "label": "口コミ派",
+        "description": "購入者レビュー、口コミ、ユーザー体験の観点から評価する",
+        "tone": "人の意見を大切にする口調",
+    },
+}
+
+DEFAULT_AGENTS = ["logical", "emotional", "critical"]
+
+
+def _build_system_instruction(selected_agents: List[str]) -> str:
+    """選択されたエージェントに基づいてシステムプロンプトを動的に構築する"""
+    agent_count = len(selected_agents)
+    parts = [
+        f"あなたは{agent_count}人の異なる人格を演じ分けるAIです。"
+        f"商品の購入について、{agent_count}つの視点から議論を行ってください。",
+        "",
+        f"## {agent_count}人のキャラクター",
+        "",
+    ]
+
+    for i, role in enumerate(selected_agents, 1):
+        agent = AGENT_DEFINITIONS.get(role)
+        if not agent:
+            continue
+        parts.append(
+            f'{i}. **{agent["name"]}（{agent["label"]}）** - role: "{role}"\n'
+            f'   - {agent["description"]}\n'
+            f'   - {agent["tone"]}'
+        )
+
+    parts.append("")
+    parts.append(
+        "## ルール\n"
+        "- 各エージェントはそれぞれの視点から独立した意見を述べること\n"
+        "- 前のターンの議論を踏まえて、議論を発展させること\n"
+        "- 具体的で有用な情報を含めること\n"
+        "- 各エージェントの発言は2〜4文程度にまとめること"
+    )
+
+    return "\n".join(parts)
+
+
 # --- システムプロンプト ---
 
-DEBATE_SYSTEM_INSTRUCTION = """\
-あなたは3人の異なる人格を演じ分けるAIです。商品の購入について、3つの視点から議論を行ってください。
-
-## 3人のキャラクター
-
-1. **Mr. Logic（論理派）** - role: "logical"
-   - データ、スペック、コストパフォーマンスなど客観的な事実に基づいて分析する
-   - 冷静で理知的な口調
-
-2. **Ms. Emotion（感情派）** - role: "emotional"
-   - デザイン、使用感、ワクワク感など感情面から評価する
-   - カジュアルで感情豊かな口調
-
-3. **Dr. Risk（慎重派）** - role: "critical"
-   - リスク、懸念点、注意すべき点を指摘する
-   - 慎重で専門的な口調
-
-## ルール
-- 各エージェントはそれぞれの視点から独立した意見を述べること
-- 前のターンの議論を踏まえて、議論を発展させること
-- 具体的で有用な情報を含めること
-- 各エージェントの発言は2〜4文程度にまとめること
-"""
+DEBATE_SYSTEM_INSTRUCTION = _build_system_instruction(DEFAULT_AGENTS)
 
 JUDGE_SYSTEM_INSTRUCTION = """\
 あなたは公正な裁判官です。AIエージェントたちの商品購入に関する議論を読み、購買意欲がどの程度高まったかを判定してください。
@@ -162,17 +241,24 @@ class GeminiAIService(AIServiceBase):
         turn_id: int,
         product_url: str,
         user_query: str,
+        selected_agents: Optional[List[str]] = None,
         user_intervention: Optional[str] = None,
         history: Optional[List[dict]] = None,
     ) -> DebateTurn:
         """Gemini APIで1ターン分の議論を生成する
 
         1. Google Search Grounding で商品情報をリサーチ
-        2. リサーチ結果を含めて3人のエージェントの発言を生成
+        2. リサーチ結果を含めてエージェントの発言を生成
         3. AI審判がスコアと判定理由を生成
         """
+        if selected_agents is None:
+            selected_agents = DEFAULT_AGENTS
+
         # 0. 商品情報をリサーチ（Google Search Grounding）
         product_info = await self._research_product(product_url, user_query)
+
+        # 選択されたエージェントに合わせて議論モデルを構築
+        debate_model = self._get_debate_model(selected_agents)
 
         # 1. 議論を生成
         debate_prompt = self._build_debate_prompt(
@@ -182,7 +268,7 @@ class GeminiAIService(AIServiceBase):
 
         logger.debug(f"Debate prompt (turn {turn_id}):\n{debate_prompt}")
 
-        debate_response = await self.debate_model.generate_content_async(
+        debate_response = await debate_model.generate_content_async(
             debate_prompt,
             generation_config=self.debate_generation_config,
         )
@@ -207,6 +293,22 @@ class GeminiAIService(AIServiceBase):
             turn_id=turn_id,
             debate=debate_messages,
             judge=judge_result,
+        )
+
+    # --- モデル構築ヘルパー ---
+
+    def _get_debate_model(self, selected_agents: List[str]) -> GenerativeModel:
+        """選択されたエージェントに合わせた議論生成用モデルを返す
+
+        デフォルトエージェントの場合はキャッシュ済みモデルを再利用する。
+        """
+        if sorted(selected_agents) == sorted(DEFAULT_AGENTS):
+            return self.debate_model
+
+        system_instruction = _build_system_instruction(selected_agents)
+        return GenerativeModel(
+            model_name=settings.VERTEX_AI_MODEL,
+            system_instruction=system_instruction,
         )
 
     # --- 商品リサーチ（Google Search Grounding） ---
