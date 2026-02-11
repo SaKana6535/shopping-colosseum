@@ -22,6 +22,7 @@ class AIServiceBase(ABC):
         selected_agents: Optional[List[str]] = None,
         user_intervention: Optional[str] = None,
         history: Optional[List[dict]] = None,
+        debate_mode: str = "battle",
     ) -> DebateTurn:
         """1ターン分の議論を生成する
         
@@ -32,6 +33,7 @@ class AIServiceBase(ABC):
             selected_agents: 参加エージェントのロールリスト（オプション）
             user_intervention: ユーザーからの議論への介入（オプション）
             history: これまでの議論履歴（オプション）
+            debate_mode: 議論モード（"battle" or "review"）
         
         Returns:
             DebateTurn: エージェントの発言 + AI審判の判定

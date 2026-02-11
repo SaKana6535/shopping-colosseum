@@ -15,6 +15,9 @@ export type AgentRole =
   | 'trendy' 
   | 'social_proof';
 
+// 議論モード
+export type DebateMode = 'battle' | 'review';
+
 export interface AgentMessage {
   agent_name: string;
   role: AgentRole;
@@ -47,6 +50,7 @@ export interface StartDebateRequest {
   product_url: string;
   user_query: string;
   selected_agents?: string[];
+  debate_mode?: DebateMode;
 }
 
 export interface StartDebateResponse {

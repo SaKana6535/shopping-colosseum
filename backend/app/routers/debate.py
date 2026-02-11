@@ -30,7 +30,8 @@ async def start_debate(request: StartDebateRequest):
     session = session_manager.create_session(
         product_url=request.product_url,
         user_query=request.user_query,
-        selected_agents=request.selected_agents
+        selected_agents=request.selected_agents,
+        debate_mode=request.debate_mode,
     )
 
     # 初回の議論を生成
@@ -41,6 +42,7 @@ async def start_debate(request: StartDebateRequest):
         selected_agents=request.selected_agents,
         user_intervention=None,
         history=None,
+        debate_mode=request.debate_mode,
     )
 
     # セッションに保存
@@ -79,6 +81,7 @@ async def next_turn(request: NextTurnRequest):
         selected_agents=session.selected_agents,
         user_intervention=request.user_intervention,
         history=session.history,
+        debate_mode=session.debate_mode,
     )
 
     # セッションに保存

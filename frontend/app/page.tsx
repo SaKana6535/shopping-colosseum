@@ -9,7 +9,7 @@ import TurnHistorySidebar from '@/components/TurnHistorySidebar';
 import JudgeGauge from '@/components/JudgeGauge';
 import InputForm from '@/components/InputForm';
 import ResultModal from '@/components/ResultModal';
-import { DebateTurn, AgentRole } from '@/types/debate';
+import { DebateTurn, AgentRole, DebateMode } from '@/types/debate';
 import { startDebate, getNextTurn } from '@/lib/api';
 import { DEFAULT_AGENTS } from '@/lib/agentConfigs';
 
@@ -21,6 +21,7 @@ export default function Home() {
   const [isPreparing, setIsPreparing] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [selectedAgents, setSelectedAgents] = useState<AgentRole[]>([...DEFAULT_AGENTS]);
+  const [debateMode, setDebateMode] = useState<DebateMode>('battle');
   const [productUrl, setProductUrl] = useState('');
   const [userQuery, setUserQuery] = useState('');
   const [showResultModal, setShowResultModal] = useState(false);
@@ -36,7 +37,7 @@ export default function Home() {
     setUserQuery(userQuery);
     
     try {
-      const response = await startDebate(productUrl, userQuery, selectedAgents);
+      const response = await startDebate(productUrl, userQuery, selectedAgents, debateMode);
       setSessionId(response.session_id);
       setTurns([response.turn]);
       setSelectedTurnId(response.turn.turn_id);
@@ -87,6 +88,7 @@ export default function Home() {
     setIsPreparing(false);
     setError(null);
     setSelectedAgents([...DEFAULT_AGENTS]);
+    setDebateMode('battle');
     setProductUrl('');
     setUserQuery('');
   };
@@ -148,6 +150,8 @@ export default function Home() {
               <AgentSelector
                 selectedAgents={selectedAgents}
                 onAgentsChange={setSelectedAgents}
+                debateMode={debateMode}
+                onDebateModeChange={setDebateMode}
               />
             </div>
 

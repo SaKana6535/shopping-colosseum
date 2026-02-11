@@ -1,15 +1,22 @@
 'use client';
 
-import { AgentRole } from '@/types/debate';
+import { AgentRole, DebateMode } from '@/types/debate';
 import { AGENT_CONFIGS, DEFAULT_AGENTS } from '@/lib/agentConfigs';
 import AvatarIcon from './AvatarIcon';
 
 interface AgentSelectorProps {
   selectedAgents: AgentRole[];
   onAgentsChange: (agents: AgentRole[]) => void;
+  debateMode: DebateMode;
+  onDebateModeChange: (mode: DebateMode) => void;
 }
 
-export default function AgentSelector({ selectedAgents, onAgentsChange }: AgentSelectorProps) {
+export default function AgentSelector({
+  selectedAgents,
+  onAgentsChange,
+  debateMode,
+  onDebateModeChange,
+}: AgentSelectorProps) {
   const toggleAgent = (role: AgentRole) => {
     if (selectedAgents.includes(role)) {
       // 最低1人は必要
@@ -29,9 +36,78 @@ export default function AgentSelector({ selectedAgents, onAgentsChange }: AgentS
 
   return (
     <div className="bg-gradient-to-br from-white to-slate-50 dark:from-slate-800 dark:to-slate-900 rounded-xl shadow-lg p-5 border border-slate-200 dark:border-slate-700 flex flex-col">
+      {/* モード切り替え */}
+      <div className="mb-4">
+        <div className="flex items-center gap-2 mb-2">
+          <span className="text-xl">&#9876;&#65039;</span>
+          <h3 className="text-base font-bold text-slate-900 dark:text-white">
+            議論モード
+          </h3>
+        </div>
+        <div className="grid grid-cols-2 gap-2">
+          <button
+            onClick={() => onDebateModeChange('battle')}
+            className={`
+              relative p-3 rounded-lg border-2 text-left transition-all
+              ${debateMode === 'battle'
+                ? 'bg-red-50 dark:bg-red-900/20 border-red-500 dark:border-red-600 shadow-md'
+                : 'bg-white dark:bg-slate-800 border-slate-200 dark:border-slate-700 hover:border-slate-300 dark:hover:border-slate-600'
+              }
+              cursor-pointer hover:scale-[1.02]
+            `}
+          >
+            <div className="flex items-center gap-2 mb-1">
+              <span className="text-lg">&#9876;&#65039;</span>
+              <span className={`font-bold text-sm ${debateMode === 'battle' ? 'text-red-700 dark:text-red-300' : 'text-slate-700 dark:text-slate-300'}`}>
+                バトルモード
+              </span>
+            </div>
+            <p className={`text-[10px] leading-tight ${debateMode === 'battle' ? 'text-red-600 dark:text-red-400' : 'text-slate-500 dark:text-slate-400'}`}>
+              互いに反論・同意し合う白熱議論
+            </p>
+            {debateMode === 'battle' && (
+              <div className="absolute top-1.5 right-1.5 w-4 h-4 bg-red-500 rounded-full flex items-center justify-center">
+                <span className="text-white text-[10px] font-bold">&#10003;</span>
+              </div>
+            )}
+          </button>
+
+          <button
+            onClick={() => onDebateModeChange('review')}
+            className={`
+              relative p-3 rounded-lg border-2 text-left transition-all
+              ${debateMode === 'review'
+                ? 'bg-emerald-50 dark:bg-emerald-900/20 border-emerald-500 dark:border-emerald-600 shadow-md'
+                : 'bg-white dark:bg-slate-800 border-slate-200 dark:border-slate-700 hover:border-slate-300 dark:hover:border-slate-600'
+              }
+              cursor-pointer hover:scale-[1.02]
+            `}
+          >
+            <div className="flex items-center gap-2 mb-1">
+              <span className="text-lg">&#128221;</span>
+              <span className={`font-bold text-sm ${debateMode === 'review' ? 'text-emerald-700 dark:text-emerald-300' : 'text-slate-700 dark:text-slate-300'}`}>
+                レビューモード
+              </span>
+            </div>
+            <p className={`text-[10px] leading-tight ${debateMode === 'review' ? 'text-emerald-600 dark:text-emerald-400' : 'text-slate-500 dark:text-slate-400'}`}>
+              各自が独立した視点からレビュー
+            </p>
+            {debateMode === 'review' && (
+              <div className="absolute top-1.5 right-1.5 w-4 h-4 bg-emerald-500 rounded-full flex items-center justify-center">
+                <span className="text-white text-[10px] font-bold">&#10003;</span>
+              </div>
+            )}
+          </button>
+        </div>
+      </div>
+
+      {/* 区切り線 */}
+      <div className="border-t border-slate-200 dark:border-slate-700 mb-3"></div>
+
+      {/* エージェント選択 */}
       <div className="flex items-center justify-between mb-3">
         <div className="flex items-center gap-2">
-          <span className="text-xl">🎭</span>
+          <span className="text-xl">&#127917;</span>
           <div>
             <h3 className="text-base font-bold text-slate-900 dark:text-white">
               AIエージェント選択
@@ -94,7 +170,7 @@ export default function AgentSelector({ selectedAgents, onAgentsChange }: AgentS
                     </div>
                     {isSelected && (
                       <div className="absolute top-1 right-1 w-4 h-4 bg-blue-500 rounded-full flex items-center justify-center">
-                        <span className="text-white text-[10px] font-bold">✓</span>
+                        <span className="text-white text-[10px] font-bold">&#10003;</span>
                       </div>
                     )}
                   </div>

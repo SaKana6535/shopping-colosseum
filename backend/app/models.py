@@ -1,12 +1,22 @@
-from pydantic import BaseModel, Field
+from pydantic import BaseModel, Field, field_validator
 from typing import List, Literal, Optional
 from datetime import datetime
+
+
+# エージェントのロール型
+AgentRole = Literal[
+    'logical', 'emotional', 'critical', 'cost_conscious', 'eco_friendly',
+    'aesthetic', 'practical', 'data_driven', 'trendy', 'social_proof',
+]
+
+# 議論モード型
+DebateMode = Literal['battle', 'review']
 
 
 class AgentMessage(BaseModel):
     """エージェント個別のメッセージ"""
     agent_name: str
-    role: Literal['logical', 'emotional', 'critical', 'cost_conscious', 'eco_friendly', 'aesthetic', 'practical', 'data_driven', 'trendy', 'social_proof']
+    role: AgentRole
     content: str
 
 
@@ -27,7 +37,19 @@ class StartDebateRequest(BaseModel):
     """議論開始リクエスト"""
     product_url: str
     user_query: str
-    selected_agents: List[str] = ['logical', 'emotional', 'critical']
+    selected_agents: List[AgentRole] = ['logical', 'emotional', 'critical']
+    debate_mode: DebateMode = 'battle'
+
+    @field_validator('selected_agents')
+    @classmethod
+    def validate_selected_agents(cls, v: List[str]) -> List[str]:
+        if len(v) < 1:
+            raise ValueError('最低1人のエージェントを選択してください')
+        if len(v) > 10:
+            raise ValueError('エージェントは最大10人までです')
+        if len(v) != len(set(v)):
+            raise ValueError('エージェントが重複しています')
+        return v
 
 
 class StartDebateResponse(BaseModel):

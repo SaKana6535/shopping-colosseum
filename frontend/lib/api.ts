@@ -9,6 +9,7 @@ import {
   NextTurnResponse,
   DebateLogListResponse,
   DebateLogDetail,
+  DebateMode,
 } from '@/types/debate';
 
 const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || '';
@@ -19,7 +20,8 @@ const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || '';
 export async function startDebate(
   productUrl: string,
   userQuery: string,
-  selectedAgents: string[] = ['logical', 'emotional', 'critical']
+  selectedAgents: string[] = ['logical', 'emotional', 'critical'],
+  debateMode: DebateMode = 'battle',
 ): Promise<StartDebateResponse> {
   const response = await fetch(`${API_BASE_URL}/api/debate/start`, {
     method: 'POST',
@@ -30,6 +32,7 @@ export async function startDebate(
       product_url: productUrl,
       user_query: userQuery,
       selected_agents: selectedAgents,
+      debate_mode: debateMode,
     }),
   });
 

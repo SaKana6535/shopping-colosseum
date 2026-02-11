@@ -14,11 +14,13 @@ logger = logging.getLogger(__name__)
 class DebateSession:
     """議論セッションのデータクラス"""
     def __init__(self, session_id: str, product_url: str, user_query: str,
-                 selected_agents: Optional[List[str]] = None):
+                 selected_agents: Optional[List[str]] = None,
+                 debate_mode: str = "battle"):
         self.session_id = session_id
         self.product_url = product_url
         self.user_query = user_query
         self.selected_agents = selected_agents or ['logical', 'emotional', 'critical']
+        self.debate_mode = debate_mode
         self.current_turn = 0
         self.history: List[dict] = []
         self.created_at = datetime.now()
@@ -39,6 +41,7 @@ class DebateSession:
             "product_url": self.product_url,
             "user_query": self.user_query,
             "selected_agents": self.selected_agents,
+            "debate_mode": self.debate_mode,
             "current_turn": self.current_turn,
             "history": self.history,
             "created_at": self.created_at,
@@ -52,6 +55,7 @@ class DebateSession:
             product_url=data["product_url"],
             user_query=data["user_query"],
             selected_agents=data.get("selected_agents"),
+            debate_mode=data.get("debate_mode", "battle"),
         )
         session.current_turn = data.get("current_turn", 0)
         session.history = data.get("history", [])
@@ -64,7 +68,8 @@ class SessionManagerBase(ABC):
 
     @abstractmethod
     def create_session(self, product_url: str, user_query: str,
-                       selected_agents: Optional[List[str]] = None) -> DebateSession:
+                       selected_agents: Optional[List[str]] = None,
+                       debate_mode: str = "battle") -> DebateSession:
         """新規セッションを作成"""
         ...
 
@@ -89,12 +94,16 @@ class InMemorySessionManager(SessionManagerBase):
 
     def __init__(self):
         self.sessions: Dict[str, DebateSession] = {}
-    
+
     def create_session(self, product_url: str, user_query: str,
-                       selected_agents: Optional[List[str]] = None) -> DebateSession:
+                       selected_agents: Optional[List[str]] = None,
+                       debate_mode: str = "battle") -> DebateSession:
         """新規セッションを作成"""
         session_id = str(uuid.uuid4())
-        session = DebateSession(session_id, product_url, user_query, selected_agents)
+        session = DebateSession(
+            session_id, product_url, user_query, selected_agents,
+            debate_mode=debate_mode,
+        )
         self.sessions[session_id] = session
         return session
 
@@ -119,12 +128,16 @@ class FirestoreSessionManager(SessionManagerBase):
         self._cache: Dict[str, DebateSession] = {}
 
     def create_session(self, product_url: str, user_query: str,
-                       selected_agents: Optional[List[str]] = None) -> DebateSession:
+                       selected_agents: Optional[List[str]] = None,
+                       debate_mode: str = "battle") -> DebateSession:
         """新規セッションを作成してFirestoreに保存"""
         from . import firestore_service
 
         session_id = str(uuid.uuid4())
-        session = DebateSession(session_id, product_url, user_query, selected_agents)
+        session = DebateSession(
+            session_id, product_url, user_query, selected_agents,
+            debate_mode=debate_mode,
+        )
 
         # Firestoreに保存
         firestore_service.save_session(
