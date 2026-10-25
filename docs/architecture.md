@@ -219,7 +219,7 @@ Shopping Colosseum は、複数のAIエージェントが商品の購入につ�
 [Cloud Build] Dockerイメージビルド
   │
   │ マルチステージビルド:
-  │   Stage 1: node:18-alpine → npm run build (Next.js静的エクスポート)
+  │   Stage 1: node:24-alpine → npm run build (Next.js静的エクスポート)
   │   Stage 2: python:3.11-slim → pip install + 静的ファイルコピー
   │
   ├──── イメージ保存 ──→ [Artifact Registry]
@@ -246,7 +246,7 @@ Shopping Colosseum は、複数のAIエージェントが商品の購入につ�
 
 | ステージ | ベースイメージ | 役割 | 出力 |
 |----------|---------------|------|------|
-| `frontend-builder` | `node:18-alpine` | Next.js 静的エクスポート | `out/` ディレクトリ |
+| `frontend-builder` | `node:24-alpine` | Next.js 静的エクスポート | `out/` ディレクトリ |
 | 最終ステージ | `python:3.11-slim` | FastAPI + 静的ファイル配信 | `/app/static` + `/app` |
 
 ---

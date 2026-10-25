@@ -155,7 +155,7 @@ gcloud run services update shopping-colosseum \
 
 | ステージ | ベースイメージ | 役割 |
 |---|---|---|
-| `frontend-builder` | `node:18-alpine` | Next.js を静的エクスポート (`npm run build` → `out/`) |
+| `frontend-builder` | `node:24-alpine` | Next.js を静的エクスポート (`npm run build` → `out/`) |
 | 最終ステージ | `python:3.11-slim` | FastAPI + 静的ファイル配信 |
 
 ### ビルドの流れ

@@ -34,7 +34,7 @@ shopping-colosseum/
 
 ### 必要な環境
 
-- Node.js 18.x以上
+- Node.js 22.x以上
 - Python 3.11以上
 - npm または yarn
 

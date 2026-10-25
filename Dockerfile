@@ -1,7 +1,7 @@
 # ============================================
 # Stage 1: Frontend ビルド（Next.js 静的エクスポート）
 # ============================================
-FROM node:18-alpine AS frontend-builder
+FROM node:24-alpine AS frontend-builder
 
 WORKDIR /app/frontend
 
