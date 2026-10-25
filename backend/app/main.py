@@ -36,8 +36,10 @@ async def health():
 # 静的ファイル配信設定（本番環境用）
 static_dir = settings.STATIC_FILES_DIR
 if static_dir and Path(static_dir).is_dir():
+    static_root = Path(static_dir).resolve()
+
     # Next.js の _next ディレクトリ（JS/CSS等のアセット）
-    next_static_dir = Path(static_dir) / "_next"
+    next_static_dir = static_root / "_next"
     if next_static_dir.is_dir():
         app.mount("/_next", StaticFiles(directory=str(next_static_dir)), name="next_static")
 
@@ -45,11 +47,12 @@ if static_dir and Path(static_dir).is_dir():
     @app.get("/{full_path:path}")
     async def serve_frontend(full_path: str):
         """静的ファイルを配信し、該当なければ index.html を返す（SPA対応）"""
-        file_path = Path(static_dir) / full_path
-        if file_path.is_file():
+        file_path = (static_root / full_path).resolve()
+        # ../ や絶対パスで static_root の外を参照するリクエストは配信しない（パストラバーサル対策）
+        if file_path.is_relative_to(static_root) and file_path.is_file():
             return FileResponse(str(file_path))
         # SPA フォールバック
-        index_path = Path(static_dir) / "index.html"
+        index_path = static_root / "index.html"
         if index_path.is_file():
             return FileResponse(str(index_path))
         return {"message": "Shopping Colosseum API", "status": "running", "version": "0.1.0"}
